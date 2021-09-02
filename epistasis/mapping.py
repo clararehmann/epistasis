@@ -105,7 +105,7 @@ class EpistasisMap(object):
         sites=None,
         values=None,
         gpm=None,
-        stdeviations=None):
+        uncertainties=None):
         if df is not None and isinstance(df, pd.DataFrame) is False:
             raise Exception("""df must be a dataframe""")
 
@@ -115,7 +115,7 @@ class EpistasisMap(object):
         if df is not None:
             self._from_df(df)
         else:
-            self._from_sites(sites=sites, values=values, stdeviations=stdeviations)
+            self._from_sites(sites=sites, values=values, uncertainties=uncertainties)
 
         self._gpm = gpm
 
@@ -128,13 +128,13 @@ class EpistasisMap(object):
     def _from_df(self, df):
         self.data = df
 
-    def _from_sites(self, sites, values, stdeviations):
+    def _from_sites(self, sites, values, uncertainties):
         data = {
             'labels': self._sites_to_keys(sites),
             'orders': self._sites_to_orders(sites),
             'sites': sites,
             'values': values,
-            'stdeviations': stdeviations
+            'uncertainties': uncertainties
         }
         self.data = pd.DataFrame(data)
         self.data.loc

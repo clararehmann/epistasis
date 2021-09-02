@@ -165,7 +165,7 @@ class AbstractModel(ABC):
             X = [X]
 
         elif obj is np.ndarray and X.ndim == 2:
-            raise Exception("X must be a list of genotypes")             
+            raise Exception("X must be a list of genotypes")
 
         elif obj in [list, np.ndarray, pd.DataFrame, pd.Series]:
             pass
@@ -189,7 +189,7 @@ class AbstractModel(ABC):
     def predict_to_excel(self, filename, X=None):
         """Predict a list of genotypes and write the results to a Excel."""
         df = self.predict_to_df(X=X)
-        df.to_excel(filename, index=False)  
+        df.to_excel(filename, index=False)
 
     @abstractmethod
     def predict_transform(self, X=None, y=None, **kwargs):

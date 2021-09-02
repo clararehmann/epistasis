@@ -12,8 +12,8 @@
 #     wildtype = "000"
 #     genotypes =  ["000", "001", "010", "100", "011", "101", "110", "111"]
 #     phenotypes = [  0.0,   0.1,   0.5,   0.4,   0.2,   0.8,   0.5,   1.0]
-#     stdeviations = 0.01
-#     gpm = GenotypePhenotypeMap(wildtype, genotypes, phenotypes, stdeviations=stdeviations)
+#     uncertainties = 0.01
+#     gpm = GenotypePhenotypeMap(wildtype, genotypes, phenotypes, uncertainties=uncertainties)
 #     model = EpistasisLinearRegression.read_gpm(gpm, order=2).fit()
 #     return model
 #

@@ -243,7 +243,7 @@ class BaseSimulation(GenotypePhenotypeMap):
         """ Method for construction phenotypes from model. """
         raise Exception("""Must be implemented in subclass. """)
 
-    def set_stdeviations(self, sigma):
+    def set_uncertainties(self, sigma):
         """Add standard deviations to the simulated phenotypes, which can then
         be used for sampling error in the genotype-phenotype map.
 
@@ -251,9 +251,9 @@ class BaseSimulation(GenotypePhenotypeMap):
         ----------
         sigma : float or array-like
             Adds standard deviations to the phenotypes. If float, all
-            phenotypes are given the same stdeviations. Else, array must be
+            phenotypes are given the same uncertainties. Else, array must be
             same length as phenotypes and will be assigned to each phenotype.
         """
-        stdeviations = np.ones(len(self.phenotypes)) * sigma
-        self.data['stdeviations'] = stdeviations
+        uncertainties = np.ones(len(self.phenotypes)) * sigma
+        self.data['uncertainties'] = uncertainties
         return self

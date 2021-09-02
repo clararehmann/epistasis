@@ -9,8 +9,8 @@ class SimulatedEpistasisMap(EpistasisMap):
     """Just like an epistasis map, but with extra methods
     for setting epistatic coefficients
     """
-    def __init__(self, gpm, df=None, sites=None, values=None, stdeviations=None):
-        super().__init__(df=df, sites=sites, values=values, stdeviations=stdeviations)
+    def __init__(self, gpm, df=None, sites=None, values=None, uncertainties=None):
+        super().__init__(df=df, sites=sites, values=values, uncertainties=uncertainties)
         self._gpm = gpm
 
     @property

@@ -15,9 +15,9 @@ def gpm():
     wildtype = "000"
     genotypes = ["000", "001", "010", "100", "011", "101", "110", "111"]
     phenotypes = [0.1,   0.1,   0.5,   0.4,   0.2,   0.8,   0.5,   1.0]
-    stdeviations = 0.1
+    uncertainties = 0.1
     return GenotypePhenotypeMap(wildtype, genotypes, phenotypes,
-                                stdeviations=stdeviations)
+                                uncertainties=uncertainties)
 
 
 class TestEpistasisRidge(object):
