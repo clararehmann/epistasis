@@ -6,8 +6,8 @@ import numpy as np
 from gpmap import GenotypePhenotypeMap
 
 # Module to test
-from ..ordinary import EpistasisLinearRegression
-
+import epistasis
+from epistasis.models.linear import EpistasisLinearRegression
 
 @pytest.fixture
 def gpm():

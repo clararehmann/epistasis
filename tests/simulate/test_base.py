@@ -1,9 +1,13 @@
-from ..base import *
-import numpy as np
+
 import pytest
 
+import epistasis
+from epistasis.simulate.base import *
+
+import numpy as np
+
 class TestBaseSimulation(object):
-    
+
     wildtype = "00"
     mutations = {0:["0","1"], 1:["0","1"]}
 
@@ -11,7 +15,7 @@ class TestBaseSimulation(object):
         sim = BaseSimulation(self.wildtype, self.mutations)
         # Checks
         assert isinstance(sim, BaseSimulation)
-        
+
     def test_set_coefs_order(self):
         sim = BaseSimulation(self.wildtype, self.mutations)
         sim.set_coefs_order(2)

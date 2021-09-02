@@ -6,7 +6,8 @@ import numpy as np
 from gpmap import GenotypePhenotypeMap
 
 # Module to test
-from ..lasso import EpistasisLasso
+import epistasis
+from epistasis.models.linear import EpistasisLasso
 
 
 @pytest.fixture

@@ -5,7 +5,8 @@ import numpy as np
 from gpmap import GenotypePhenotypeMap
 
 # Module to test
-from .. import *
+import epistasis
+from epistasis.models.classifiers import *
 
 
 @pytest.fixture

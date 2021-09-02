@@ -5,7 +5,8 @@ import numpy as np
 from gpmap import GenotypePhenotypeMap
 
 # Module to test
-from ..ordinary import EpistasisNonlinearRegression
+import epistasis
+from epistasis.models.nonlinear import EpistasisNonlinearRegression
 
 import warnings
 
