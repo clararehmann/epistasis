@@ -30,9 +30,11 @@ def k_fold(gpm, model, k=10):
         model.add_gpm(train)
         model.fit()
 
+        ## XX_API_CHANGE
+
         # Score validation set
-        pobs = test.phenotypes
-        pred = model.predict(X=test.genotypes)
+        pobs = test.phenotype
+        pred = model.predict(X=test.genotype)
 
         score = pearson(pobs, pred)**2
         scores.append(score)
@@ -63,15 +65,16 @@ def holdout(gpm, model, size=1, repeat=1):
         test_X = X[test_idx, :]
 
         # Train the model
-        model.fit(X=train_X, y=gpm.phenotypes[train_idx])
+        ## XX_API_CHANGE
+        model.fit(X=train_X, y=gpm.phenotype[train_idx])
 
         train_p = model.predict(X=train_X)
-        train_s = pearson(train_p, gpm.phenotypes[train_idx])**2
+        train_s = pearson(train_p, gpm.phenotype[train_idx])**2
         train_scores.append(train_s)
 
         # Test the model
         test_p = model.predict(X=test_X)
-        test_s = pearson(test_p, gpm.phenotypes[test_idx])**2
+        test_s = pearson(test_p, gpm.phenotype[test_idx])**2
         test_scores.append(test_s)
 
 

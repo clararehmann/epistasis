@@ -218,6 +218,7 @@ class EpistasisEnsembleRegression(BaseModel):
 
             return y - ymodel
 
+        ## XX_API_CHANGE
         y = self.gpm.phenotypes
 
         # Minimize the above residual function.
@@ -251,7 +252,8 @@ class EpistasisEnsembleRegression(BaseModel):
         """Calculate the pearson coefficient between the models predictions and
         a given y array.
         """
-        return pearson(self.gpm.phenotypes, self.predict(X=X))**2
+        ## XX_API_CHANGE
+        return pearson(self.gpm.phenotype, self.predict(X=X))**2
 
     def hypothesis(self, X=None, thetas=None):
         pass

@@ -6,8 +6,8 @@ from ..utils import arghandler
 
 # Suppress an annoying error from scikit-learn
 import warnings
-warnings.filterwarnings(action="ignore", module="scipy",
-                        message="^internal gelsd")
+#warnings.filterwarnings(action="ignore", module="scipy",
+#                        message="^internal gelsd")
 
 
 @use_sklearn(Ridge)
@@ -72,7 +72,7 @@ class EpistasisRidge(BaseModel):
         self.order = order
         # Necessary for sklearn 0.24 +
         self.positive = False
-        
+
         self.Xbuilt = {}
 
         # Store model specs.

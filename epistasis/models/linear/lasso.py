@@ -4,15 +4,11 @@ from sklearn.linear_model import Lasso
 from ..base import BaseModel, use_sklearn
 from ..utils import arghandler
 
-# Suppress an annoying error from scikit-learn
-import warnings
-warnings.filterwarnings(action="ignore", module="scipy",
-                        message="^internal gelsd")
-
 
 @use_sklearn(Lasso)
 class EpistasisLasso(BaseModel):
-    """A scikit-learn Lasso Regression class for discovering sparse
+    """
+    A scikit-learn Lasso Regression class for discovering sparse
     epistatic coefficients.
 
     Methods are described in the following publication:
@@ -68,6 +64,7 @@ class EpistasisLasso(BaseModel):
         (setting to 'random') often leads to significantly faster convergence
         especially when tol is higher than 1e-4.
     """
+
     def __init__(
             self,
             order=1,
@@ -81,6 +78,7 @@ class EpistasisLasso(BaseModel):
             random_state=None,
             selection='cyclic',
             **kwargs):
+
         # Set Linear Regression settings.
         self.fit_intercept = False
         self.normalize = False
@@ -107,7 +105,8 @@ class EpistasisLasso(BaseModel):
             **kwargs)
 
     def compression_ratio(self):
-        """Compute the compression ratio for the Lasso regression
+        """
+        Compute the compression ratio for the Lasso regression
         """
         vals = self.epistasis.values
         zeros = vals[vals == 0]
@@ -170,7 +169,7 @@ class EpistasisLasso(BaseModel):
 
         # Calculate y from model.
         ymodel = self.hypothesis(X=X, thetas=thetas)
-
+        
         # Return the likelihood of this model (with an L1 prior)
         return (- 0.5 * np.log(2 * np.pi * yerr**2) -
                 (0.5 * ((y - ymodel)**2 / yerr**2)) -

@@ -231,21 +231,22 @@ class EpistasisPipeline(list, BaseModel):
         X = data
         # If X is None, see if we saved an array.
         if X is None:
-            return self.gpm.genotypes
+            return self.gpm.genotype
         return X
 
     def _y(self, data=None, method=None):
         """Handle y arguments in this model."""
         y = data
+        ## XX_API_CHANGE
         if y is None:
-            return self.gpm.phenotypes
+            return self.gpm.phenotype
         return y
 
     def _yerr(self, data=None, method=None):
         """Handle yerr argument in this model."""
         yerr = data
         if yerr is None:
-            return self.gpm.std.upper
+            return 1.0 # XX_API_CHANGE self.gpm.std.upper
         return yerr
 
     def _thetas(self, data=None, method=None):

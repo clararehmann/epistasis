@@ -27,12 +27,12 @@ def fraction_explained(fraction_explained, color_vector=None, num_bins=1000,lw=0
         color_scalar = int(order / len(color_vector))  + 1
         color_vector *= color_scalar
     else:
-        if len(fx_vector) > len(color_vector):
-            err = "len(color_vector) must be >= len(fx_vector)\n"
+        if len(internal_fx_vector) > len(color_vector):
+            err = "len(color_vector) must be >= len(internal_fx_vector)\n"
             raise ValueError(err)
 
     # Discretize the input vector with appropriately scaled
-    side_length = np.int(np.round(np.sqrt(num_bins),0))
+    side_length = int(np.round(np.sqrt(num_bins),0))
     num_bins = side_length*side_length
     fx_vector_int = np.cumsum(np.round(internal_fx_vector*num_bins,0)).astype(int)
 

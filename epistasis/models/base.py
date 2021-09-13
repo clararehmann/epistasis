@@ -6,14 +6,10 @@ from sklearn.preprocessing import binarize
 
 from abc import abstractmethod, ABC, ABCMeta
 
-# imports from gpmap dependency
-from gpmap.gpm import GenotypePhenotypeMap
-
 # Local imports
 from epistasis.mapping import EpistasisMap, encoding_to_sites
 from epistasis.matrix import get_model_matrix
-from epistasis.utils import (extract_mutations_from_genotypes,
-                             genotypes_to_X)
+from epistasis.utils import extract_mutations_from_genotypes, genotypes_to_X
 from .utils import XMatrixException
 from sklearn.base import RegressorMixin, BaseEstimator
 
@@ -159,7 +155,7 @@ class AbstractModel(ABC):
         obj = X.__class__
 
         if X is None:
-            X = self.gpm.genotypes
+            X = self.gpm.genotype
 
         elif obj is str and X[0] in self.gpm.mutations[0]:
             X = [X]
@@ -480,13 +476,13 @@ class AbstractModel(ABC):
 
             # Get X from genotypes
             X = genotypes_to_X(
-                self.gpm.genotypes,
+                self.gpm.genotype,
                 self.gpm,
                 order=self.order,
                 model_type=self.model_type
             )
 
-        elif obj is str and X in self.gpm.genotypes:
+        elif obj is str and X in self.gpm.genotype:
             single_genotype = [X]
             # Get X from genotypes
             X = genotypes_to_X(
@@ -527,8 +523,9 @@ class AbstractModel(ABC):
         obj = data.__class__
         y = data
 
+        ## XX_API_CHANGE
         if y is None:
-            return self.gpm.phenotypes
+            return self.gpm.phenotype
 
         elif obj in [list, np.ndarray, pd.Series, pd.DataFrame]:
             return y
@@ -542,7 +539,7 @@ class AbstractModel(ABC):
         obj = data.__class__
         yerr = data
         if yerr is None:
-            return self.gpm.std.upper
+            return 0.1 # XX_API_CHANGE self.gpm.std.upper
 
         elif obj in [list, np.ndarray, pd.Series, pd.DataFrame]:
             return yerr

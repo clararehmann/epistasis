@@ -1,50 +1,71 @@
-import numpy as np
-from gpmap.gpm import GenotypePhenotypeMap
-from gpmap import utils
-
 # Local imports
-from epistasis.mapping import (encoding_to_sites, assert_epistasis)
+from epistasis.mapping import encoding_to_sites, assert_epistasis
 from .mapping import SimulatedEpistasisMap
 from epistasis.matrix import get_model_matrix
 from epistasis.utils import extract_mutations_from_genotypes
 from epistasis.models.utils import XMatrixException
 
+import gpmap
+from gpmap import GenotypePhenotypeMap
+
+
+import numpy as np
+import pandas as pd
+
+# XX_API_CHANGE
+# PRETTY BIG API CHANGE. BASESIMULATION IS DAUGHTER CLASS
+
 
 class BaseSimulation(GenotypePhenotypeMap):
-    """ Base class for simulating genotype-phenotype maps built from epistatic
+    """
+    Base class for simulating genotype-phenotype maps built from epistatic
     interactions.
 
     Parameters
     ----------
+    mutations : list
+        lists of lists where element lists have possible states at each site
     wildtype : str
-        wildtype sequence.
-    mutations : dict
-        dictionary mapping each site the possible mutations
+        wildtype sequence. if None, use arbitrary genotype
+    order : int
+        order for the epistatic coefficients
+    model_type : str
+        type of model to use for simulation
+    **kwargs : keywords
+        keyword arguments passed to gpmap.GenotypePhenotypeMap constructor
+
     """
-    def __init__(self, wildtype, mutations, order=None,
+    def __init__(self,
+                 mutations,
+                 wildtype=None,
+                 order=None,
                  model_type="global",
-                 **kwargs
-                 ):
+                 **kwargs):
+
         self.model_type = model_type
         self.Xbuilt = {}
-        genotypes = np.array(
-            utils.mutations_to_genotypes(mutations, wildtype=wildtype))
+        genotypes = np.array(gpmap.utils.mutations_to_genotypes(mutations))
+        if wildtype is None:
+            wildtype = str(genotypes[0])
+
+        # Generate phenotypes of value 1
         phenotypes = np.ones(len(genotypes))
 
         # Initialize a genotype-phenotype map
-        super(BaseSimulation, self).__init__(
-            wildtype,
-            genotypes,
-            phenotypes,
-            mutations=mutations,
-            **kwargs)
+        super(BaseSimulation, self).__init__(genotype=genotypes,
+                                             phenotype=phenotypes,
+                                             wildtype=wildtype,
+                                             mutations=mutations,
+                                             **kwargs)
 
+        # If order specified, add epistasis to the model
         if order is not None:
             self.order = order
             self.add_epistasis()
 
     def add_epistasis(self):
-        """Add an EpistasisMap to model.
+        """
+        Add an EpistasisMap to model.
         """
         # Build epistasis interactions as columns in X matrix.
         sites = encoding_to_sites(self.order, self.encoding_table)
@@ -53,7 +74,8 @@ class BaseSimulation(GenotypePhenotypeMap):
         self.epistasis = SimulatedEpistasisMap(gpm=self, sites=sites, values=0)
 
     def add_X(self, X="complete", key=None):
-        """Add X to Xbuilt
+        """
+        Add X to Xbuilt
 
         Parameters
         ----------
@@ -105,8 +127,10 @@ class BaseSimulation(GenotypePhenotypeMap):
         return X_built
 
     def set_coefs_order(self, order):
-        """Construct a set of epistatic coefficients given the epistatic
-        order."""
+        """
+        Construct a set of epistatic coefficients given the epistatic
+        order.
+        """
         # Attach an epistasis model.
         self.order = order
         self.add_epistasis()
@@ -115,14 +139,17 @@ class BaseSimulation(GenotypePhenotypeMap):
         return self
 
     def set_coefs_sites(self, sites):
-        """Construct a set of epistatic coefficients given a list of
-        coefficient sites."""
+        """
+        Construct a set of epistatic coefficients given a list of
+        coefficient sites.
+        """
         self.order = max([len(s) for s in sites])
         self.add_epistasis()
         return self
 
     def set_coefs(self, sites, values):
-        """Set the epistatic coefs
+        """
+        Set the epistatic coefs
 
         Parameters
         ----------
@@ -138,21 +165,27 @@ class BaseSimulation(GenotypePhenotypeMap):
 
     @assert_epistasis
     def set_wildtype_phenotype(self, value):
-        """Set the wildtype phenotype."""
+        """
+        Set the wildtype phenotype.
+        """
+
         self.epistasis.data.values[0] = value
         self.build()
 
     @assert_epistasis
     def set_coefs_values(self, values):
-        """Set coefficient values.
         """
+        Set coefficient values.
+        """
+
         self.epistasis.data.values = values
         self.build()
         return self
 
     @assert_epistasis
     def set_coefs_random(self, coef_range):
-        """Set coefs to values drawn from a random, uniform distribution between
+        """
+        Set coefs to values drawn from a random, uniform distribution between
         coef_range.
 
         Parameters
@@ -168,7 +201,8 @@ class BaseSimulation(GenotypePhenotypeMap):
 
     @assert_epistasis
     def set_coefs_decay(self):
-        """Use a decaying exponential model to choose random epistatic coefficient
+        """
+        Use a decaying exponential model to choose random epistatic coefficient
         values that decay/shrink with increasing order.
         """
         wt_phenotype = self.epistasis.values[0]
@@ -189,7 +223,8 @@ class BaseSimulation(GenotypePhenotypeMap):
 
     @classmethod
     def from_length(cls, length, **kwargs):
-        """Constructs genotype from binary sequences with given length and
+        """
+        onstructs genotype from binary sequences with given length and
         phenotypes from epistasis with a given order.
 
         Parameters
@@ -204,13 +239,14 @@ class BaseSimulation(GenotypePhenotypeMap):
         GenotypePhenotypeMap
         """
         wildtype = "0" * length
-        mutations = utils.genotypes_to_mutations([wildtype, "1" * length])
+        mutations = gpmap.utils.genotypes_to_mutations([wildtype, "1" * length])
         return cls(wildtype, mutations, **kwargs)
 
     @classmethod
     def from_coefs(cls, wildtype, mutations, sites, coefs, model_type="global",
                    *args, **kwargs):
-        """Construct a genotype-phenotype map from epistatic coefficients.
+        """
+        Construct a genotype-phenotype map from epistatic coefficients.
 
         Parameters
         ----------
@@ -240,11 +276,14 @@ class BaseSimulation(GenotypePhenotypeMap):
         return self
 
     def build(self, values=None, **kwargs):
-        """ Method for construction phenotypes from model. """
+        """
+        Method for construction phenotypes from model.
+        """
         raise Exception("""Must be implemented in subclass. """)
 
     def set_uncertainties(self, sigma):
-        """Add standard deviations to the simulated phenotypes, which can then
+        """
+        Add standard deviations to the simulated phenotypes, which can then
         be used for sampling error in the genotype-phenotype map.
 
         Parameters
@@ -254,6 +293,7 @@ class BaseSimulation(GenotypePhenotypeMap):
             phenotypes are given the same uncertainties. Else, array must be
             same length as phenotypes and will be assigned to each phenotype.
         """
-        uncertainties = np.ones(len(self.phenotypes)) * sigma
+        ## XX_API_CHANGE
+        uncertainties = np.ones(len(self.phenotype)) * sigma
         self.data['uncertainties'] = uncertainties
         return self

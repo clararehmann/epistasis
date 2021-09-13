@@ -6,8 +6,8 @@ from ..utils import arghandler
 
 # Suppress an annoying error from scikit-learn
 import warnings
-warnings.filterwarnings(action="ignore", module="scipy",
-                        message="^internal gelsd")
+#warnings.filterwarnings(action="ignore", module="scipy",
+#                        message="^internal gelsd")
 
 @use_sklearn(LinearRegression)
 class EpistasisLinearRegression(BaseModel):

@@ -74,8 +74,7 @@ def get_model_matrix(binary_genotypes, sites, model_type='global'):
     Parameters
     ----------
     binary_genotypes : list or array
-        List of genotypes in their binary representation (see
-        gpmap.utils.genotypes_to_binary)
+        List of genotypes in their binary representation
 
     sites : list
         List of epistatic interaction sites.
@@ -106,8 +105,7 @@ def get_pandas_matrix(
     Parameters
     ----------
     binary_genotypes : list or array
-        List of genotypes in their binary representation (see
-        gpmap.utils.genotypes_to_binary)
+        List of genotypes in their binary representation 
 
     sites : list
         List of epistatic interaction sites.

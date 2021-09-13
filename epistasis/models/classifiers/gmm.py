@@ -11,8 +11,6 @@ from epistasis.models.utils import (XMatrixException, arghandler)
 
 from epistasis.models.linear import EpistasisLinearRegression
 
-from gpmap import GenotypePhenotypeMap
-
 from .base import EpistasisClassifierMixin
 
 @use_sklearn(GaussianMixture)

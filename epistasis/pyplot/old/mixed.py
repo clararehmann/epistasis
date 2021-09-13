@@ -18,7 +18,7 @@ def corr(padd, pobs, perr=None, ax=None, color='k'):
     # Add data to plot
     ax.scatter(padd, pobs, marker='o', c=color, cmap="coolwarm", vmin=0, vmax=1)
     ax.plot(z,z, '--', color='gray')
-    
+
     # Set spines
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -29,10 +29,11 @@ def corr(padd, pobs, perr=None, ax=None, color='k'):
 
 def model(model):
 
+    ## XX_API_CHANGE
     # Get Padd vs Pobs datapoints and classes
     padd = model.Model.Additive.predict(X="obs")
     pprob = model.Classifier.predict_proba(X="obs")
-    pobs = model.gpm.phenotypes
+    pobs = model.gpm.phenotype
 
     # Build a color array for the two classes
     #color = np.empty(len(pclass), dtype=str)

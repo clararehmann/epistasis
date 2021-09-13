@@ -13,12 +13,10 @@ from epistasis.models.utils import (XMatrixException, arghandler)
 
 from epistasis.models.linear import EpistasisLinearRegression
 
-from gpmap import GenotypePhenotypeMap
-
 # Suppress Deprecation warning
 import warnings
-warnings.filterwarnings(action="ignore", module="sklearn",
-                        category=DeprecationWarning)
+#warnings.filterwarnings(action="ignore", module="sklearn",
+#                        category=DeprecationWarning)
 
 
 from .base import EpistasisClassifierMixin
@@ -41,7 +39,7 @@ class EpistasisLogisticRegression(EpistasisClassifierMixin, BaseModel):
         a background-averaged "genotype-phenotype". "local" defines epistasis
         with respect to the wildtype genotype.
     """
-    def __init__(self, threshold, model_type="global", **kwargs):
+    def __init__(self, threshold=0.2, model_type="global", **kwargs):
         super(self.__class__, self).__init__(**kwargs)
         self.threshold = threshold
         self.model_type = model_type

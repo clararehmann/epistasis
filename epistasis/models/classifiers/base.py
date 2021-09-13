@@ -10,11 +10,11 @@ from epistasis.models.utils import (XMatrixException, arghandler)
 
 from epistasis.models.linear import EpistasisLinearRegression
 
-from gpmap import GenotypePhenotypeMap
-
+import gpmap
 
 class EpistasisClassifierMixin:
-    """A Mixin class for epistasis classifiers
+    """
+    A Mixin class for epistasis classifiers
     """
     def _fit_additive(self, X=None, y=None):
         # Construct an additive model.
@@ -41,7 +41,7 @@ class EpistasisClassifierMixin:
         X = add_X * add_coefs
 
         # Label X.
-        y = binarize(y.reshape(1, -1), self.threshold)[0]
+        y = binarize(y.reshape(1, -1), threshold=self.threshold)[0]
         self.classes = y
 
         # Fit classifier.
@@ -52,12 +52,12 @@ class EpistasisClassifierMixin:
         self.fit(X=X, y=y, **kwargs)
         ypred = self.predict(X=X)
 
-        # Transform map.
-        gpm = GenotypePhenotypeMap.read_dataframe(
-            dataframe=self.gpm.data[ypred==1],
-            wildtype=self.gpm.wildtype,
-            mutations=self.gpm.mutations
-        )
+        # Read new GenotypePhenotypeMap only taking data where ypred=1
+        gpm = gpmap.read_dataframe(self.gpm.data.loc[ypred==1,:],
+                                   wildtype=self.gpm.wildtype,
+                                   mutations=self.gpm.mutations,
+                                   site_labels=self.gpm.site_labels)
+
         return gpm
 
     def predict(self, X=None):

@@ -6,7 +6,6 @@ genotype-phenotype maps."""
 # ------------------------------------------------------------
 
 import numpy as np
-from gpmap.gpm import GenotypePhenotypeMap
 
 # local imports
 from epistasis.matrix import get_model_matrix
@@ -56,4 +55,5 @@ class LinearSimulation(BaseSimulation):
         """ Build the phenotype map from epistatic interactions. """
         X = self.add_X()
         # Get model type:
-        self.data['phenotypes'] = np.dot(X, self.epistasis.values)
+        ## XX_API_CHANGE
+        self.data['phenotype'] = np.dot(X, self.epistasis.values)

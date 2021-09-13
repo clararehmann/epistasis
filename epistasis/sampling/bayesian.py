@@ -81,7 +81,7 @@ class BayesianSampler(object):
         """Sample the likelihood of the model by walking n_steps with each
         walker."""
         # Suppress warnings that occur when sampling the model.
-        warnings.simplefilter("ignore", RuntimeWarning)
+        #warnings.simplefilter("ignore", RuntimeWarning)
 
         # Check if a previous run was given
         if previous_state is None:

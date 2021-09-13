@@ -1,6 +1,8 @@
+#cython: language_level=3
+
 import numpy as np
 
-DTYPE = np.int
+DTYPE = int
 
 cimport numpy as np
 

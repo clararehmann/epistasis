@@ -11,14 +11,16 @@ from epistasis.models.linear import EpistasisLasso
 
 
 @pytest.fixture
-def gpm():
-    """Create a genotype-phenotype map"""
-    wildtype = "000"
-    genotypes = ["000", "001", "010", "100", "011", "101", "110", "111"]
-    phenotypes = [0.1,   0.1,   0.5,   0.4,   0.2,   0.8,   0.5,   1.0]
-    uncertainties = 0.1
-    return GenotypePhenotypeMap(wildtype, genotypes, phenotypes,
-                                uncertainties=uncertainties)
+def gpm(test_data):
+    """
+    Create a genotype-phenotype map
+    """
+
+    d = test_data[0]
+
+    return GenotypePhenotypeMap(genotype=d["genotype"],
+                                phenotype=d["phenotype"],
+                                wildtype=d["wildtype"])
 
 
 class TestEpistasisLasso(object):
@@ -61,7 +63,7 @@ class TestEpistasisLasso(object):
         assert "predict" in model.Xbuilt
 
     def test_score(self, gpm):
-        model = EpistasisLasso(order=self.order, model_type="local", alpha=0.1)
+        model = EpistasisLasso(order=self.order, model_type="local", alpha=0.01)
         model.add_gpm(gpm)
         model.fit()
         score = model.score()

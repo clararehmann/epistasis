@@ -17,7 +17,7 @@ DESCRIPTION = 'A Python API for estimating statistical high-order epistasis in g
 URL = 'https://github.com/harmslab/epistasis'
 EMAIL = 'zachsailer@gmail.com'
 AUTHOR = 'Zachary R. Sailer'
-REQUIRES_PYTHON = '>=3.3.0'
+REQUIRES_PYTHON = '>=3.7.0'
 VERSION = None
 
 # What packages are required for this module to be executed?
@@ -25,7 +25,7 @@ REQUIRED = [
     "cython",
     "numpy>=1.15.2",
     "pandas>=0.24.2",
-    "scikit-learn>=0.20.0",
+    "scikit-learn>=0.24.0",
     "scipy>=1.1.0",
     "emcee>=2.2.1",
     "lmfit>=0.9.11",

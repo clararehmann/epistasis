@@ -5,8 +5,6 @@ from functools import wraps
 from epistasis.matrix import get_model_matrix
 from epistasis.mapping import EpistasisMap
 
-from gpmap.utils import genotypes_to_binary
-
 class XMatrixException(Exception):
     """Exception Subclass for X matrix errors."""
 

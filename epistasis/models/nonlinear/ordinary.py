@@ -9,7 +9,6 @@ import pandas as pd
 # Scikit learn imports
 from sklearn.base import BaseEstimator, RegressorMixin
 
-# GPMap import
 from gpmap import GenotypePhenotypeMap
 
 # Epistasis imports.
@@ -168,14 +167,15 @@ class EpistasisNonlinearRegression(BaseModel):
 
         linear_phenotypes = self.transform(X=X, y=y)
 
-        # Transform map.
-        gpm = GenotypePhenotypeMap.read_dataframe(
-            dataframe=self.gpm.data,
-            wildtype=self.gpm.wildtype,
-            mutations=self.gpm.mutations
-        )
+        # Create new GenotypePhenotypeMap, wiping out phenotype
+        gpm = gpmap.read_dataframe(self.gpm.data,
+                                   wildtype=self.gpm.wildtype,
+                                   mutations=self.gpm.mutations,
+                                   site_labels=self.gpm.site_labels)
 
-        gpm.data['phenotypes'] = linear_phenotypes
+        # XX_API_CHANGE
+        gpm.data.loc[:,'phenotype'] = linear_phenotypes
+
         return gpm
 
     def predict(self, X=None):
