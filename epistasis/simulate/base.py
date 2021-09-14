@@ -12,10 +12,6 @@ from gpmap import GenotypePhenotypeMap
 import numpy as np
 import pandas as pd
 
-# XX_API_CHANGE
-# PRETTY BIG API CHANGE. BASESIMULATION IS DAUGHTER CLASS
-
-
 class BaseSimulation(GenotypePhenotypeMap):
     """
     Base class for simulating genotype-phenotype maps built from epistatic
@@ -99,7 +95,7 @@ class BaseSimulation(GenotypePhenotypeMap):
                 columns = self.epistasis.sites
 
             # Use desired set of genotypes for rows in X matrix.
-            index = self.binary
+            index = self.data.loc[:,"binary"]
 
             # Build numpy array
             x = get_model_matrix(index, columns, model_type=self.model_type)
@@ -293,7 +289,7 @@ class BaseSimulation(GenotypePhenotypeMap):
             phenotypes are given the same uncertainties. Else, array must be
             same length as phenotypes and will be assigned to each phenotype.
         """
-        ## XX_API_CHANGE
-        uncertainties = np.ones(len(self.phenotype)) * sigma
+
+        uncertainties = np.ones(len(self.data)) * sigma
         self.data['uncertainties'] = uncertainties
         return self

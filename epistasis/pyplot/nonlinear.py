@@ -66,8 +66,7 @@ def plot_scale(
     if model is not None:
         params = model.parameters
 
-        ## XX_API_CHANGE
-        yobs = model.gpm.phenotype
+        yobs = np.array(model.gpm.loc[,self.phenotype_column])
         yadd = model.Additive.predict()
 
         xx = np.linspace(min(yadd), max(yadd),20)
@@ -124,8 +123,8 @@ def plot_power_transform(
     # Get data
     if model is not None:
         params = model.parameters
-        ## XX_API_CHANGE
-        yobs = model.gpm.phenotype
+
+        yobs = 
         yadd = model.Additive.predict()
         xdata = yadd
 

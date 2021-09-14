@@ -3,8 +3,32 @@ import pandas as pd
 from .stats import split_gpm, pearson
 
 
-def k_fold(gpm, model, k=10):
-    """Cross-validation using K-fold validation on a seer.
+def k_fold(gpm,
+           model,
+           k=10,
+           genotype_column="genotype",
+           phenotype_column="phenotype"):
+    """
+    Cross-validation using K-fold validation on a model.
+
+    Parameters
+    ----------
+    gpm : gpmap.GenotypePhenotypeMap
+        genotype phenotype map with data to fit
+    model : epistasis model
+        epistasis model to test
+    k : int (Default 10)
+        break data in to k subsets and fit each one independently
+    genotype_column : str (Default: genotype)
+        column in gpm.data to use for gentotype
+    phenotype_column : str (Default : phenotype)
+        column in gpm.data to use for phenotype
+
+    Returns
+    -------
+    scores : list of floats
+        k pearson coefficients for k-size test sets calculated using individually
+        trained models
     """
     # Get index.
     idx = np.copy(gpm.index)
@@ -27,14 +51,14 @@ def k_fold(gpm, model, k=10):
         train, test = split_gpm(gpm, idx=train_idx)
 
         # Fit model.
-        model.add_gpm(train)
+        model.add_gpm(train,
+                      genotype_column=genotype_column,
+                      phenotype_column=phenotype_column)
         model.fit()
 
-        ## XX_API_CHANGE
-
         # Score validation set
-        pobs = test.phenotype
-        pred = model.predict(X=test.genotype)
+        pobs = np.array(test.gpm.loc[:,phenotype_column])
+        pred = model.predict(X=np.array(test.gpm.loc[:,genotype_column]))
 
         score = pearson(pobs, pred)**2
         scores.append(score)
@@ -42,13 +66,42 @@ def k_fold(gpm, model, k=10):
     return scores
 
 
-def holdout(gpm, model, size=1, repeat=1):
-    """Validate a model by holding-out parts of the data.
+def holdout(gpm,
+            model,
+            size=1,
+            repeat=1
+            genotype_column="genotype",
+            phenotype_column="phenotype"):
     """
+    Validate a model by holding-out parts of the data.
+
+    Parameters
+    ----------
+    gpm : gpmap.GenotypePhenotypeMap
+        genotype phenotype map with data to fit
+    model : epistasis model
+        epistasis model to test
+    size : int
+        how many observations to hold out when testing
+    repeat : int
+        how many times to repeat hodling out data
+    genotype_column : str (Default: genotype)
+        column in gpm.data to use for gentotype
+    phenotype_column : str (Default : phenotype)
+        column in gpm.data to use for phenotype
+
+    Returns
+    -------
+    train_scores, test_scores : (list,list)
+        repeat-length lists of pearson coefficients for training and test sets
+    """
+
     train_scores = []
     test_scores = []
 
-    model.add_gpm(gpm)
+    model.add_gpm(gpm,
+                  genotype_column=genotype_column,
+                  phenotype_column=phenotype_column)
     X = model._X()
 
     for i in range(repeat):
@@ -65,16 +118,17 @@ def holdout(gpm, model, size=1, repeat=1):
         test_X = X[test_idx, :]
 
         # Train the model
-        ## XX_API_CHANGE
-        model.fit(X=train_X, y=gpm.phenotype[train_idx])
+        train_pheno = gpm.data.loc[train_idx,gpm.phenotype_column]
+        model.fit(X=train_X, y=train_pheno)
 
         train_p = model.predict(X=train_X)
-        train_s = pearson(train_p, gpm.phenotype[train_idx])**2
+        train_s = pearson(train_p, train_pheno)**2
         train_scores.append(train_s)
 
         # Test the model
+        test_pheno = gpm.data.loc[test_idx,gpm.phenotype_column]
         test_p = model.predict(X=test_X)
-        test_s = pearson(test_p, gpm.phenotype[test_idx])**2
+        test_s = pearson(test_p, test_pheno)**2
         test_scores.append(test_s)
 
 

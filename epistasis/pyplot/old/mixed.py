@@ -29,11 +29,10 @@ def corr(padd, pobs, perr=None, ax=None, color='k'):
 
 def model(model):
 
-    ## XX_API_CHANGE
     # Get Padd vs Pobs datapoints and classes
     padd = model.Model.Additive.predict(X="obs")
     pprob = model.Classifier.predict_proba(X="obs")
-    pobs = model.gpm.phenotype
+    pobs = np.array(model.gpm.loc[:,self.phenotype_column])
 
     # Build a color array for the two classes
     #color = np.empty(len(pclass), dtype=str)

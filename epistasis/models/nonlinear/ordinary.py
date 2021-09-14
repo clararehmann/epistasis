@@ -173,8 +173,7 @@ class EpistasisNonlinearRegression(BaseModel):
                                    mutations=self.gpm.mutations,
                                    site_labels=self.gpm.site_labels)
 
-        # XX_API_CHANGE
-        gpm.data.loc[:,'phenotype'] = linear_phenotypes
+        gpm.data.loc[:,self.phenotype_column] = linear_phenotypes
 
         return gpm
 

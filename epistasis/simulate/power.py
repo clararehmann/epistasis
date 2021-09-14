@@ -69,6 +69,5 @@ class PowerScaleSimulation(BaseSimulation):
         self.linear_phenotypes = np.dot(X, self.epistasis.values)
 
         # Build nonlinear phenotypes
-        ## XX_API_CHANGE
-        self.data['phenotype'] = self.function(
+        self.data.loc[:,'phenotype'] = self.function(
             self.linear_phenotypes, *self.parameters.values())

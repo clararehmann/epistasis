@@ -59,6 +59,9 @@ class AbstractModel(ABC):
             except AttributeError:
                 pass
 
+        self._genotype_column = None
+        self._phenotype_column = None
+
         return super(AbstractModel, self).__new__(self)
 
     # --------------------------------------------------------------
@@ -441,7 +444,7 @@ class AbstractModel(ABC):
         Xbuilt = self.Xbuilt[key]
         return Xbuilt
 
-    def add_gpm(self, gpm):
+    def add_gpm(self, gpm, genotype_column="genotype", phenotype_column="phenotype"):
         """Add a GenotypePhenotypeMap object to the epistasis model.
         """
         self._gpm = gpm
@@ -454,6 +457,10 @@ class AbstractModel(ABC):
 
         # Map those columns to epistastalis dataframe.
         self.epistasis = EpistasisMap(sites=self.Xcolumns, gpm=gpm)
+
+        self._genotype_column = genotype_column
+        self._phenotype_column = phenotype_column
+
         return self
 
     @property
@@ -523,9 +530,8 @@ class AbstractModel(ABC):
         obj = data.__class__
         y = data
 
-        ## XX_API_CHANGE
         if y is None:
-            return self.gpm.phenotype
+            return np.array(self.gpm.data.loc[:,self._phenotype_column])
 
         elif obj in [list, np.ndarray, pd.Series, pd.DataFrame]:
             return y
@@ -571,6 +577,13 @@ class AbstractModel(ABC):
         else:
             raise Exception("_prior is invalid.")
 
+    @property
+    def genotype_column(self):
+        return self._genotype_column
+
+    @property
+    def phenotype_column(self):
+        return self._phenotype_column
 
 class BaseModel(AbstractModel, RegressorMixin, BaseEstimator):
     """Base model for defining an epistasis model.

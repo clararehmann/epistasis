@@ -218,8 +218,7 @@ class EpistasisEnsembleRegression(BaseModel):
 
             return y - ymodel
 
-        ## XX_API_CHANGE
-        y = self.gpm.phenotypes
+        y = np.array(self.gpm.loc[:,self._phenotype_column])
 
         # Minimize the above residual function.
         self.results = lmfit.minimize(
@@ -252,8 +251,9 @@ class EpistasisEnsembleRegression(BaseModel):
         """Calculate the pearson coefficient between the models predictions and
         a given y array.
         """
-        ## XX_API_CHANGE
-        return pearson(self.gpm.phenotype, self.predict(X=X))**2
+        
+        obs = np.array(self.gpm.loc[:,self.phenotype_column])
+        return pearson(obs, self.predict(X=X))**2
 
     def hypothesis(self, X=None, thetas=None):
         pass
