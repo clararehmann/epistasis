@@ -1,22 +1,17 @@
-__doc__ = """Submodule with useful statistics functions for epistasis model."""
-
-# -----------------------------------------------------------------------
-# Useful statistical metrics as methods
-# -----------------------------------------------------------------------
-
-import numpy as np
-from scipy.stats import f
-from scipy.stats import norm
-import scipy
+__description__ = \
+"""
+Functions with useful statistics functions for epistasis model.
+"""
+__author__ = "Zach Sailer"
 
 import gpmap
+import numpy as np
+import scipy
 
-# -----------------------------------------------------------------------
-# Correlation metrics
-# -----------------------------------------------------------------------
 
 def split_data(data, idx=None, nobs=None, fraction=None):
-    """Split DataFrame into two sets, a training and a test set.
+    """
+    Split DataFrame into two sets, a training and a test set.
 
     Parameters
     ----------
@@ -87,7 +82,8 @@ def split_data(data, idx=None, nobs=None, fraction=None):
 
 
 def split_gpm(gpm, idx=None, nobs=None, fraction=None):
-    """Split GenotypePhenotypeMap into two sets, a training and a test set.
+    """
+    Split GenotypePhenotypeMap into two sets, a training and a test set.
 
     Parameters
     ----------
@@ -129,7 +125,8 @@ def split_gpm(gpm, idx=None, nobs=None, fraction=None):
 
 
 def gmean(x):
-    """Calculate a geometric mean with zero and negative values.
+    """
+    Calculate a geometric mean with zero and negative values.
 
     Following the gmean calculation from this paper:
 
@@ -161,7 +158,8 @@ def gmean(x):
 
 
 def incremental_mean(old_mean, samples, M, N):
-    """Calculate an incremental running mean.
+    """
+    Calculate an incremental running mean.
 
     Parameters
     ----------
@@ -179,7 +177,8 @@ def incremental_mean(old_mean, samples, M, N):
 
 
 def incremental_var(old_mean, old_var, new_mean, samples, M, N):
-    """Calculate an incremental variance.
+    """
+    Calculate an incremental variance.
 
     Parameters
     ----------
@@ -202,7 +201,8 @@ def incremental_var(old_mean, old_var, new_mean, samples, M, N):
 
 
 def incremental_std(old_mean, old_std, new_mean, samples, M, N):
-    """Calculate an incremental standard deviation.
+    """
+    Calculate an incremental standard deviation.
 
     Parameters
     ----------
@@ -221,7 +221,8 @@ def incremental_std(old_mean, old_std, new_mean, samples, M, N):
 
 
 def pearson(y_obs, y_pred):
-    """ Calculate pearson coefficient between two variables.
+    """
+    Calculate pearson coefficient between two variables.
     """
     x = y_obs
     y = y_pred
@@ -242,14 +243,17 @@ def pearson(y_obs, y_pred):
 
 
 def rmsd(yobs, ypred):
-    """Calculate the root mean squared deviation of an estimator."""
+    """
+    Calculate the root mean squared deviation of an estimator.
+    """
     ypred = np.array(ypred)
     yobs = np.array(yobs)
     return np.sqrt(np.sum((ypred - yobs)**2) / len(ypred))
 
 
 def generalized_r2(y_obs, y_pred):
-    """ Calculate the rquared between the observed and predicted y.
+    """
+    Calculate the rquared between the observed and predicted y.
     See wikipedia definition of `coefficient of determination`.
     """
     # Mean fo the y observed
@@ -263,7 +267,8 @@ def generalized_r2(y_obs, y_pred):
 
 
 def explained_variance(y_obs, y_pred):
-    """Returns the explained variance
+    """
+    Returns the explained variance
     """
     # Mean fo the y observed
     y_obs_mean = np.mean(y_obs)
@@ -276,16 +281,22 @@ def explained_variance(y_obs, y_pred):
 
 
 def ss_residuals(y_obs, y_pred):
-    """ calculate residuals """
+    """
+    calculate residuals
+    """
     return sum((y_obs - y_pred)**2)
 
 
 def chi_squared(y_obs, y_pred):
-    """ Calculate the chi squared between observed and predicted y. """
+    """
+    Calculate the chi squared between observed and predicted y.
+    """
     return sum((y_obs - y_pred)**2 / y_pred)
 
 def aic(model):
-    """Given a model, calculates an AIC score."""
+    """
+    Given a model, calculates an AIC score.
+    """
     k = model.num_of_params
     L = model.lnlikelihood()
     return 2*(k-L)
@@ -296,7 +307,8 @@ def aic(model):
 
 
 def false_positive_rate(y_obs, y_pred, upper_ci, lower_ci, sigmas=2):
-    """ Calculate the false positive rate of predicted values. Finds all values
+    """
+    Calculate the false positive rate of predicted values. Finds all values
     that equal zero in the known array and calculates the number of false
     positives found in the predicted given the number of samples and sigmas.
 
@@ -359,7 +371,8 @@ def false_positive_rate(y_obs, y_pred, upper_ci, lower_ci, sigmas=2):
 
 
 def false_negative_rate(y_obs, y_pred, upper_ci, lower_ci, sigmas=2):
-    """ Calculate the false negative rate of predicted values. Finds all values
+    """
+    Calculate the false negative rate of predicted values. Finds all values
     that equal zero in the known array and calculates the number of false
     negatives found in the predicted given the number of samples and sigmas.
 

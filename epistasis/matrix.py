@@ -1,19 +1,20 @@
 import numpy as np
 import pandas as pd
 
+import warnings
+
 # Try importing model matrix builder from cython extension for speed up.
 try:
     from .matrix_cython import build_model_matrix
 
 except ImportError:
 
-    import warnings as _warnings
-
     # Raise warning
-    _warnings.warn('Could not load cython extension, "build_model_matrix".', Warning)
+    warnings.warn('Could not load cython extension, "build_model_matrix".')
 
     def build_model_matrix(encoding_vectors, sites):
-        """Build model matrix.
+        """
+        Build model matrix.
 
         This can be made faster by cython.
         """
@@ -38,8 +39,8 @@ except ImportError:
 
 
 def encode_vectors(binary_genotypes, model_type='global'):
-    """Encode a set of binary genotypes is input vectors for the given model
-
+    """
+    Encode a set of binary genotypes is input vectors for the given model
     """
     # Initialize vector container
     vectors = []
@@ -93,19 +94,19 @@ def get_model_matrix(binary_genotypes, sites, model_type='global'):
     return X
 
 
-def get_pandas_matrix(
-    binary_genotypes,
-    sites,
-    matrix=None,
-    model_type="global"):
-    """Get epistasis model matrix as a Pandas DataFrame.
+def get_pandas_matrix(binary_genotypes,
+                      sites,
+                      matrix=None,
+                      model_type="global"):
+    """
+    Get epistasis model matrix as a Pandas DataFrame.
 
     This is useful for visualizing the matrix in a Jupyter Notebook.
 
     Parameters
     ----------
     binary_genotypes : list or array
-        List of genotypes in their binary representation 
+        List of genotypes in their binary representation
 
     sites : list
         List of epistatic interaction sites.

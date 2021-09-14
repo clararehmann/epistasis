@@ -1,28 +1,21 @@
-# Mapping Object for epistatic interactions int the epistasis map
-#
-# Author: Zach Sailer
-#
-# ----------------------------------------------------------
-# Outside imports
-# ----------------------------------------------------------
+__description__ = \
+"""
+Mapping Object for epistatic interactions int the epistasis map.
+"""
+__author__ = "Zach Sailer"
 
-import json
-import itertools as it
-from functools import wraps
-from collections import OrderedDict
-
-import numpy as np
-import pandas as pd
-
-# ----------------------------------------------------------
-# Local imports
-# ----------------------------------------------------------
 
 import gpmap
 
+import pandas as pd
+
+import itertools as it
+from functools import wraps
+
 
 def assert_epistasis(method):
-    """Assert that an epistasis map has been attached to the object.
+    """
+    Assert that an epistasis map has been attached to the object.
     """
     @wraps(method)
     def wrapper(self, *args, **kwargs):
@@ -34,19 +27,24 @@ def assert_epistasis(method):
 
 
 def site_to_key(site, state=""):
-    """Convert site to key. `state` is added to end of key."""
+    """
+    Convert site to key. `state` is added to end of key.
+    """
     if type(state) != str:
         raise Exception("`state` must be a string.")
     return ",".join([str(l) for l in site]) + state
 
 
 def key_to_site(key):
-    """ Convert an interaction key to label."""
+    """
+    Convert an interaction key to label.
+    """
     return [int(k) for k in key.split(",")]
 
 
 def genotype_coeffs(genotype, order=None):
-    """List the possible epistatic coefficients (as label form) for a binary
+    """
+    List the possible epistatic coefficients (as label form) for a binary
     genotype up to a given order.
     """
     if order is None:
@@ -59,7 +57,8 @@ def genotype_coeffs(genotype, order=None):
     return params
 
 def encoding_to_sites(order, encoding_table, start_order=0):
-    """Build interaction sites up to nth order given a mutation alphabet.
+    """
+    Build interaction sites up to nth order given a mutation alphabet.
 
     Parameters
     ----------
@@ -98,7 +97,8 @@ def encoding_to_sites(order, encoding_table, start_order=0):
 
 
 class EpistasisMap(object):
-    """Container object (DataFrame) for epistatic interactions.
+    """
+    Container object (DataFrame) for epistatic interactions.
     """
     def __init__(self,
         df=None,

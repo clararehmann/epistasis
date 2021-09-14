@@ -1,12 +1,18 @@
-"""Epistasis Pipeline module."""
+__description__ = \
+"""
+Epistasis Pipeline module.
+"""
+__author__ = "Zach Sailer"
+
+from epistasis.stats import pearson
+from epistasis.models.base import BaseModel
+from epistasis.models.utils import arghandler
 
 import numpy as np
-from ..stats import pearson
-from .base import BaseModel
-from .utils import arghandler
 
 class EpistasisPipeline(list, BaseModel):
-    """Construct a pipeline of epistasis models to run in series.
+    """
+    Construct a pipeline of epistasis models to run in series.
 
     This object is a subclass of a Python list. This means, all objects are
     changed in-place. This also means, you can append, prepend, remove,
@@ -16,6 +22,7 @@ class EpistasisPipeline(list, BaseModel):
     one at a time. This method returns as transformed GenotypePhenotypeMap
     object and adds it to the next Epistasis model in the list.
     """
+
     @property
     def num_of_params(self):
         return sum([m.num_of_params for m in self])

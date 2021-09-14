@@ -1,7 +1,8 @@
+__description__ = \
 """
-A library of models to decompose high-order epistasis in genotype-phenotype
-maps.
+A library of models to decompose epistasis in genotype-phenotype maps.
 """
+
 # Import linear models
 from .linear import (EpistasisLinearRegression,
                      EpistasisLasso,

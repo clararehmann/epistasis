@@ -1,7 +1,11 @@
-import numpy as np
-import pandas as pd
-from .stats import split_gpm, pearson
+__description__ = \
+"""
+Functions for validating model fits of epistasis models.
+"""
+__author__ = "Zach Sailer"
 
+import numpy as np
+from .stats import split_gpm, pearson
 
 def k_fold(gpm,
            model,

@@ -1,10 +1,15 @@
-import inspect
-import numpy as np
+__description__ = \
+"""
+Class for simulating a genotype phenotype map with phenotypes following a
+power transform.
+"""
+__author__ = "Zach Sailer"
+
 from .base import BaseSimulation
 from epistasis.models.nonlinear import Parameters
 from epistasis.models.nonlinear.power import power_transform
-from epistasis.matrix import get_model_matrix
 
+import numpy as np
 
 class PowerScaleSimulation(BaseSimulation):
     """Creates a GenotypePhenotype map that exhibits a nonlinear shape created

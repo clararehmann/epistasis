@@ -1,11 +1,21 @@
+__description__ = \
+"""
+Plot barplot with epistatic coefficients.
+"""
+__author__ = "Zach Sailer"
+
+from epistasis.utils import Bunch
+
+import gpmap
+
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
 import matplotlib.patches as patches
 import matplotlib as mpl
+
 import numpy as np
-import gpmap
 from scipy.stats import norm as scipy_norm
-from epistasis.utils import Bunch
+
 
 
 def plot_coefs(model=None, sites=None, values=None, errors=None, **kwargs):

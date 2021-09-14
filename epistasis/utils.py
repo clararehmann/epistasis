@@ -17,16 +17,7 @@ from .mapping import encoding_to_sites
 from epistasis.matrix import get_model_matrix
 from gpmap.utils import genotypes_to_binary
 
-# -------------------------------------------------------
-# Custom exceptions
-# -------------------------------------------------------
 
-class SubclassException(Exception):
-    """ For methods that must be implemented in a subclass. """
-
-# -------------------------------------------------------
-# Useful methods
-# -------------------------------------------------------
 
 def genotypes_to_X(genotypes, gpm, order=1, model_type='global'):
     """Build an X matrix for a list of genotypes."""

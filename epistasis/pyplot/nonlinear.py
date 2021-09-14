@@ -1,3 +1,9 @@
+__description__ = \
+"""
+Plot nonlinear transforms of gpmaps.
+"""
+__author__ = "Zach Sailer"
+
 import functools
 import numpy as np
 

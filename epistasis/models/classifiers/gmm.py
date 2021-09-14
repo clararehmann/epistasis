@@ -1,21 +1,23 @@
-import numpy as np
-import pandas as pd
+__description__ = \
+"""
+Gaussian Mixture Model
+"""
+__author__ = "Zach Sailer"
 
-# Scikit-learn classifiers
+from epistasis.models.base import BaseModel, use_sklearn
+from epistasis.models.utils import arghandler
+from .base import EpistasisClassifierMixin
+
 from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import binarize
 
-from epistasis.mapping import EpistasisMap
-from epistasis.models.base import BaseModel, use_sklearn
-from epistasis.models.utils import (XMatrixException, arghandler)
-
-from epistasis.models.linear import EpistasisLinearRegression
-
-from .base import EpistasisClassifierMixin
+import numpy as np
+import pandas as pd
 
 @use_sklearn(GaussianMixture)
 class EpistasisGaussianMixture(EpistasisClassifierMixin, BaseModel):
-    """Logistic regression for estimating epistatic interactions that lead to
+    """
+    Logistic regression for estimating epistatic interactions that lead to
     nonviable phenotypes. Useful for predicting viable/nonviable phenotypes.
 
     Parameters

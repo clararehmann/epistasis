@@ -1,9 +1,15 @@
-import numpy as np
+__description__ = \
+"""
+Class implementing linear lasso regression.
+"""
+__author__ = "Zach Sailer"
+
+from epistasis.models.base import BaseModel, use_sklearn
+from epistasis.models.utils import arghandler
+
 from sklearn.linear_model import Lasso
 
-from ..base import BaseModel, use_sklearn
-from ..utils import arghandler
-
+import numpy as np
 
 @use_sklearn(Lasso)
 class EpistasisLasso(BaseModel):
@@ -169,7 +175,7 @@ class EpistasisLasso(BaseModel):
 
         # Calculate y from model.
         ymodel = self.hypothesis(X=X, thetas=thetas)
-        
+
         # Return the likelihood of this model (with an L1 prior)
         return (- 0.5 * np.log(2 * np.pi * yerr**2) -
                 (0.5 * ((y - ymodel)**2 / yerr**2)) -

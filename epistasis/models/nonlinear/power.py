@@ -1,24 +1,25 @@
-import inspect
-from functools import wraps
+__description__ = \
+"""
+Class implementing a power transform nonlinear model.
+"""
+__author__ = "Zach Sailer"
 
-import scipy
-import numpy as np
-import pandas as pd
+from epistasis.stats import gmean
+from epistasis.models.utils import arghandler
+from epistasis.models.linear.ordinary import EpistasisLinearRegression
+from epistasis.models.nonlinear.ordinary import EpistasisNonlinearRegression
+from .minimizer import FunctionMinimizer
 
 import lmfit
 from lmfit import Parameter, Parameters
 
-from epistasis.stats import gmean, pearson
-from epistasis.models.utils import arghandler
-from epistasis.models.linear.ordinary import EpistasisLinearRegression
-from epistasis.models.nonlinear.ordinary import EpistasisNonlinearRegression
-
-from .minimizer import FunctionMinimizer
+import numpy as np
 
 # -------------------- Power Transform Function -----------------------
 
 def power_transform(x, lmbda, A, B, data=None):
-    """Transform x according to a power transformation.
+    """
+    Transform x according to a power transformation.
 
     Note, this functions calculates the geometric mean of x
     to center the power transform on the data. If you'd like to calculate

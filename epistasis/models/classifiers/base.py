@@ -1,16 +1,20 @@
+__description__ = \
+"""
+Base model for epistasis classifier models.
+"""
+__author__ = "Zach Sailer"
+
+import gpmap
+
+from epistasis.mapping import EpistasisMap
+from epistasis.models.utils import arghandler
+from epistasis.models.linear import EpistasisLinearRegression
+
+from sklearn.preprocessing import binarize
+
 import numpy as np
 import pandas as pd
 
-# Scikit-learn classifiers
-from sklearn.preprocessing import binarize
-
-from epistasis.mapping import EpistasisMap
-from epistasis.models.base import BaseModel, use_sklearn
-from epistasis.models.utils import (XMatrixException, arghandler)
-
-from epistasis.models.linear import EpistasisLinearRegression
-
-import gpmap
 
 class EpistasisClassifierMixin:
     """

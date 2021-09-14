@@ -1,12 +1,15 @@
-import pandas as pd
+__description__ = \
+"""
+Class for sampling an epistasis model using Bayesian Markov Chain Monte Carlo.
+"""
+__author__ = "Zach Sailer"
+
 import numpy as np
 import emcee
-import warnings
-from functools import wraps
-
 
 class BayesianSampler(object):
-    """A sampling class to estimate the uncertainties in an epistasis model's
+    """
+    A sampling class to estimate the uncertainties in an epistasis model's
     coefficients using a Bayesian approach. This object samples from
     the experimental uncertainty in the phenotypes to estimate confidence
     intervals for the coefficients in an epistasis model according to Bayes
@@ -78,10 +81,10 @@ class BayesianSampler(object):
         return walker_positions
 
     def sample(self, n_steps=100, n_burn=0, previous_state=None):
-        """Sample the likelihood of the model by walking n_steps with each
-        walker."""
-        # Suppress warnings that occur when sampling the model.
-        #warnings.simplefilter("ignore", RuntimeWarning)
+        """
+        Sample the likelihood of the model by walking n_steps with each
+        walker.
+        """
 
         # Check if a previous run was given
         if previous_state is None:

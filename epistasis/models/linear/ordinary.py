@@ -1,13 +1,15 @@
-import numpy as np
+__description__ = \
+"""
+Class implementing ordinary linear regression.
+"""
+__author__ = "Zach Sailer"
+
+from epistasis.models.base import BaseModel, use_sklearn
+from epistasis.models.utils import arghandler
+
 from sklearn.linear_model import LinearRegression
 
-from ..base import BaseModel, use_sklearn
-from ..utils import arghandler
-
-# Suppress an annoying error from scikit-learn
-import warnings
-#warnings.filterwarnings(action="ignore", module="scipy",
-#                        message="^internal gelsd")
+import numpy as np
 
 @use_sklearn(LinearRegression)
 class EpistasisLinearRegression(BaseModel):

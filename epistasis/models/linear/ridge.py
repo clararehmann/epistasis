@@ -1,18 +1,20 @@
-import numpy as np
+__description__ = \
+"""
+Class implementing ordinary ridge regression.
+"""
+__author__ = "Zach Sailer"
+
+from epistasis.models.base import BaseModel, use_sklearn
+from epistasis.models.utils import arghandler
+
 from sklearn.linear_model import Ridge
 
-from ..base import BaseModel, use_sklearn
-from ..utils import arghandler
-
-# Suppress an annoying error from scikit-learn
-import warnings
-#warnings.filterwarnings(action="ignore", module="scipy",
-#                        message="^internal gelsd")
-
+import numpy as np
 
 @use_sklearn(Ridge)
 class EpistasisRidge(BaseModel):
-    """A scikit-learn Ridge Regression class for discovering sparse
+    """
+    A scikit-learn Ridge Regression class for discovering sparse
     epistatic coefficients.
 
     Parameters

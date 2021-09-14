@@ -1,19 +1,22 @@
-import numpy as np
-import pandas as pd
-import lmfit
+__description__ = \
+"""
+Class implementing an ensemble epistasis model.
 
-from sklearn.base import BaseEstimator, RegressorMixin
-
+XX NOT FULLY IMPLEMENTED.
+"""
 
 from epistasis.stats import pearson
-from ..mapping import EpistasisMap, encoding_to_sites
-from .base import BaseModel
-from epistasis.matrix import get_model_matrix
-from .utils import arghandler
+from epistasis.mapping import EpistasisMap
+from epistasis.models.base import BaseModel
+from epistasis.models.utils import arghandler
+
+import numpy as np
+import lmfit
 
 
 class State(EpistasisMap):
-    """A state in an EpistasisEnsembleModel.
+    """
+    A state in an EpistasisEnsembleModel.
 
     This represents/models an unknown excited state that is perturbed by
     mutations in the genotype-phenotype map and contributes to the overall
@@ -61,7 +64,8 @@ class State(EpistasisMap):
 
 
 class EpistasisEnsembleRegression(BaseModel):
-    """Ensemble epistasis model. It models variation in a genotype-phenotype map
+    """
+    Ensemble epistasis model. It models variation in a genotype-phenotype map
     as a statistical ensemble of nstates contributing to each genotype's
     phenotype.
 
@@ -251,7 +255,7 @@ class EpistasisEnsembleRegression(BaseModel):
         """Calculate the pearson coefficient between the models predictions and
         a given y array.
         """
-        
+
         obs = np.array(self.gpm.loc[:,self.phenotype_column])
         return pearson(obs, self.predict(X=X))**2
 

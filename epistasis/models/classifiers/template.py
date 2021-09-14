@@ -1,13 +1,15 @@
+
+# Scikit-learn classifiers
+
+from epistasis.models.base import BaseModel, use_sklearn
+from epistasis.models.utils import arghandler
+from .base import EpistasisClassifierMixin
+
+from sklearn.preprocessing import binarize
+
 import numpy as np
 import pandas as pd
 
-# Scikit-learn classifiers
-from sklearn.preprocessing import binarize
-
-from epistasis.models.base import BaseModel, use_sklearn
-from epistasis.models.utils import (XMatrixException, arghandler)
-
-from .base import EpistasisClassifierMixin
 
 #@use_sklearn(sklearn_class)
 class EpistasisClassiferClass(EpistasisClassifierMixin, BaseModel):

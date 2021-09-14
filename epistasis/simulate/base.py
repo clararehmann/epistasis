@@ -1,13 +1,15 @@
-# Local imports
+__description__ = \
+"""
+Base class for simulating genotype phenotype maps from epistasis models.
+"""
+__author__ = "Zach Sailer"
+
+from .distribution import DistributionSimulation
 from epistasis.mapping import encoding_to_sites, assert_epistasis
-from .mapping import SimulatedEpistasisMap
 from epistasis.matrix import get_model_matrix
-from epistasis.utils import extract_mutations_from_genotypes
-from epistasis.models.utils import XMatrixException
 
 import gpmap
 from gpmap import GenotypePhenotypeMap
-
 
 import numpy as np
 import pandas as pd
@@ -67,7 +69,7 @@ class BaseSimulation(GenotypePhenotypeMap):
         sites = encoding_to_sites(self.order, self.encoding_table)
 
         # Map those columns to epistastalis dataframe.
-        self.epistasis = SimulatedEpistasisMap(gpm=self, sites=sites, values=0)
+        self.epistasis = DistributionSimulation(gpm=self, sites=sites, values=0)
 
     def add_X(self, X="complete", key=None):
         """
@@ -115,9 +117,9 @@ class BaseSimulation(GenotypePhenotypeMap):
             self.Xbuilt[key] = X
 
         else:
-            raise XMatrixException("X must be one of the following: 'obs',"
-                                   " 'complete', "
-                                   "numpy.ndarray, or pandas.DataFrame.")
+            err = "X must be one of the following: 'obs', 'complete', a\n"
+            err += "numpy.ndarray or a pandas.DataFrame.\n"
+            raise TypeError(err)
 
         X_built = self.Xbuilt[key]
         return X_built

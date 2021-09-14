@@ -1,24 +1,16 @@
-s__doc__ = """Submodule with various classes for generating/simulating
-genotype-phenotype maps."""
+__description__ = \
+"""
+Class for simulating genotype phenotype map with linear epistasis model.
+"""
+__author__ = "Zach Sailer"
 
-# ------------------------------------------------------------
-# Imports
-# ------------------------------------------------------------
+from epistasis.simulate.base import BaseSimulation
 
 import numpy as np
 
-# local imports
-from epistasis.matrix import get_model_matrix
-from epistasis.simulate.base import BaseSimulation
-
-# ------------------------------------------------------------
-# ArtificialMap object can be used to quickly generating a toy
-# space for testing the EpistasisModels
-# ------------------------------------------------------------
-
-
 class LinearSimulation(BaseSimulation):
-    """Construct an genotype-phenotype from linear building blocks and
+    """
+    Construct an genotype-phenotype from linear building blocks and
     epistatic coefficients.
 
     Example
@@ -44,16 +36,19 @@ class LinearSimulation(BaseSimulation):
     def __init__(self, wildtype, mutations,
                  model_type='global',
                  **kwargs):
+
         # Construct epistasis mapping objects (empty)
         super(LinearSimulation, self).__init__(
-            wildtype,
-            mutations,
-            **kwargs)
+              wildtype,
+              mutations,
+              **kwargs)
         self.model_type = model_type
 
     def build(self):
-        """ Build the phenotype map from epistatic interactions. """
+        """
+        Build the phenotype map from epistatic interactions.
+        """
         X = self.add_X()
-        
+
         # Get model type:
         self.data.loc[:,'phenotype'] = np.dot(X, self.epistasis.values)

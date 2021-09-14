@@ -1,18 +1,26 @@
-import numpy as np
-import pandas as pd
+__description__ = \
+"""
+Discriminant analysis classifier.
 
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-from sklearn.preprocessing import binarize
+XX NOT FULLY IMPLEMENTED.
+"""
+__author__ = "Zach Sailer"
 
-from epistasis.mapping import EpistasisMap
 from epistasis.models.base import BaseModel, use_sklearn
 from epistasis.models.utils import arghandler
 from epistasis.models.linear import EpistasisLinearRegression
 
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.preprocessing import binarize
+
+import numpy as np
+import pandas as pd
+
 # Use if inheriting from a scikit-learn class
 @use_sklearn(QuadraticDiscriminantAnalysis)
 class EpistasisQuadraticDA(BaseModel):
-    """testing quadratic
+    """
+
     """
     def __init__(self, order=1, threshold=5, model_type='global', **kwargs):
         self.model_type = model_type

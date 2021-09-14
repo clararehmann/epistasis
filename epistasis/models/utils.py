@@ -1,19 +1,15 @@
+__description__ = \
+"""
+Utilities useful for model construction from abstract classes and mixins.
+"""
+__author__ = "Zach Sailer"
+
 import inspect
-import numpy as np
-import pandas as pd
 from functools import wraps
-from epistasis.matrix import get_model_matrix
-from epistasis.mapping import EpistasisMap
-
-class XMatrixException(Exception):
-    """Exception Subclass for X matrix errors."""
-
-
-class FittingError(Exception):
-    """Exception Subclass for X matrix errors."""
 
 def arghandler(method):
-    """Points methods to argument handlers. Assumes each argument has a
+    """
+    Points methods to argument handlers. Assumes each argument has a
     corresponding method attached to the object named "_{argument}". These
     methods given default values to arguments.
 

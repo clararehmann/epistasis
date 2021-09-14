@@ -1,24 +1,23 @@
-# Suppress an annoying error
-import warnings
-# warnings.filterwarnings(action="ignore", category=RuntimeWarning)
+__description__ = \
+"""
+Class implementing ordinary nonlinear regression.
+"""
+__author__ = "Zach Sailer"
 
-# Scipy stack imports
-import numpy as np
-import pandas as pd
-
-# Scikit learn imports
-from sklearn.base import BaseEstimator, RegressorMixin
+from epistasis.mapping import EpistasisMap
+from epistasis.models.base import BaseModel
+from epistasis.models.utils import arghandler
+from epistasis.models.linear import EpistasisLinearRegression
+from epistasis.stats import pearson
+from .minimizer import FunctionMinimizer
 
 import gpmap
 
-# Epistasis imports.
-from epistasis.mapping import EpistasisMap
-from epistasis.models.base import BaseModel
-from epistasis.models.utils import (arghandler, FittingError)
-from epistasis.models.linear import (EpistasisLinearRegression, EpistasisLasso)
-from epistasis.stats import pearson
+from sklearn.base import BaseEstimator, RegressorMixin
 
-from .minimizer import FunctionMinimizer
+import numpy as np
+import pandas as pd
+
 
 class EpistasisNonlinearRegression(BaseModel):
     """Use nonlinear least-squares regression to estimate epistatic coefficients

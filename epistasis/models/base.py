@@ -1,23 +1,32 @@
-import json
-import inspect
-import numpy as np
-import pandas as pd
-from sklearn.preprocessing import binarize
+__description__ = \
+"""
+Base model class for epistasis analyses.
+"""
+__author__ = "Zach Sailer"
 
-from abc import abstractmethod, ABC, ABCMeta
-
-# Local imports
 from epistasis.mapping import EpistasisMap, encoding_to_sites
 from epistasis.matrix import get_model_matrix
-from epistasis.utils import extract_mutations_from_genotypes, genotypes_to_X
-from .utils import XMatrixException
+from epistasis.utils import genotypes_to_X
+
+from sklearn.preprocessing import binarize
 from sklearn.base import RegressorMixin, BaseEstimator
 
+import numpy as np
+import pandas as pd
+
+import inspect
+from abc import abstractmethod, ABC
+
 class SubclassException(Exception):
-    """Subclass Exception for parent classes."""
+    """
+    Subclass Exception for parent classes.
+    """
+
+    pass
 
 def use_sklearn(sklearn_class):
-    """Swap out last class in the inherited stack (Assuming its
+    """
+    Swap out last class in the inherited stack (Assuming its
     the BaseModel) with the AbstractModel below. Then, sandwiches
     the Sklearn class with all other base classes first, followed
     by the Sklearn class and the AbstractModel.
@@ -38,12 +47,14 @@ def use_sklearn(sklearn_class):
     return mixer
 
 class AbstractModel(ABC):
-    """Abstract Base Class for all epistasis models.
+    """
+    Abstract Base Class for all epistasis models.
 
     This class sets all docstrings not given in subclasses.
     """
     def __new__(self, *args, **kwargs):
-        """Replace the docstrings of a subclass with docstrings in
+        """
+        Replace the docstrings of a subclass with docstrings in
         this base class.
         """
         # Get items in BaseModel.
@@ -71,7 +82,8 @@ class AbstractModel(ABC):
     @property
     @abstractmethod
     def num_of_params(self):
-        """Number of parameters in model.
+        """
+        Number of parameters in model.
         """
         raise SubclassException("Must be implemented in a subclass.")
 
@@ -81,7 +93,8 @@ class AbstractModel(ABC):
 
     @abstractmethod
     def fit(self, X=None, y=None, **kwargs):
-        """Fit model to data.
+        """
+        Fit model to data.
 
         Parameters
         ----------
@@ -107,7 +120,8 @@ class AbstractModel(ABC):
 
     @abstractmethod
     def fit_transform(self, X=None, y=None, **kwargs):
-        """Fit model to data and transform output according to model.
+        """
+        Fit model to data and transform output according to model.
 
         Parameters
         ----------
@@ -132,7 +146,8 @@ class AbstractModel(ABC):
 
     @abstractmethod
     def predict(self, X=None):
-        """Use model to predict phenotypes for a given list of genotypes.
+        """
+        Use model to predict phenotypes for a given list of genotypes.
 
         Parameters
         ----------
@@ -152,7 +167,10 @@ class AbstractModel(ABC):
         raise SubclassException("Must be implemented in a subclass.")
 
     def predict_to_df(self, X=None):
-        """Predict a list of genotypes and write the results to a dataframe."""
+        """
+        Predict a list of genotypes and write the results to a dataframe.
+        """
+
         # ------- Handle X --------------
         # Get object type.
         obj = X.__class__
@@ -181,18 +199,23 @@ class AbstractModel(ABC):
         ))
 
     def predict_to_csv(self, filename, X=None):
-        """Predict a list of genotypes and write the results to a CSV."""
+        """
+        Predict a list of genotypes and write the results to a CSV.
+        """
         df = self.predict_to_df(X=X)
         df.to_csv(filename, index=False)
 
     def predict_to_excel(self, filename, X=None):
-        """Predict a list of genotypes and write the results to a Excel."""
+        """
+        Predict a list of genotypes and write the results to a Excel.
+        """
         df = self.predict_to_df(X=X)
         df.to_excel(filename, index=False)
 
     @abstractmethod
     def predict_transform(self, X=None, y=None, **kwargs):
-        """Transform a set of phenotypes according to the model.
+        """
+        Transform a set of phenotypes according to the model.
 
         Parameters
         ----------
@@ -216,7 +239,8 @@ class AbstractModel(ABC):
 
     @abstractmethod
     def hypothesis(self, X=None, thetas=None):
-        """Compute phenotypes from given model parameters.
+        """
+        Compute phenotypes from given model parameters.
 
         Parameters
         ----------
@@ -240,7 +264,8 @@ class AbstractModel(ABC):
 
     @abstractmethod
     def hypothesis_transform(self, X=None, y=None, thetas=None):
-        """Transform phenotypes with given model parameters.
+        """
+        Transform phenotypes with given model parameters.
 
         Parameters
         ----------
@@ -273,7 +298,8 @@ class AbstractModel(ABC):
            y=None,
            yerr=None,
            thetas=None):
-        """Compute the individUal log-likelihoods for each datapoint from a set
+        """
+        Compute the individUal log-likelihoods for each datapoint from a set
         of model parameters.
 
         Parameters
@@ -310,7 +336,8 @@ class AbstractModel(ABC):
             yerr=None,
             lnprior=None,
             thetas=None):
-        """Compute the individual log-likelihoods for each datapoint from a set
+        """
+        Compute the individual log-likelihoods for each datapoint from a set
         of model parameters and a prior.
 
         Parameters
@@ -348,7 +375,8 @@ class AbstractModel(ABC):
             y=None,
             yerr=None,
             thetas=None):
-        """Compute the individal log-likelihoods for each datapoint from a set
+        """
+        Compute the individal log-likelihoods for each datapoint from a set
         of model parameters.
 
         Parameters
@@ -383,7 +411,8 @@ class AbstractModel(ABC):
         return lnlike
 
     def add_X(self, X=None, key=None):
-        """Add X to Xbuilt
+        """
+        Add X to Xbuilt
 
         Keyword arguments for X:
 
@@ -409,9 +438,11 @@ class AbstractModel(ABC):
         if isinstance(X, str) and X == None:
 
             if hasattr(self, "gpm") is False:
-                raise XMatrixException("To build None, 'missing', or"
-                                       "'complete' X matrix, a "
-                                       "GenotypePhenotypeMap must be attached")
+                err = "To build an X matrix with 'None', 'missing', or 'complete'\n"
+                err += "a GenotypePhenotypeMap must be attached (see add_gpm)\n"
+                err += "method.\n"
+
+                raise ValueError(err)
 
             # Get X columns
             columns = self.Xcolumns
@@ -437,15 +468,16 @@ class AbstractModel(ABC):
             self.Xbuilt[key] = X
 
         else:
-            raise XMatrixException("X must be one of the following: None, "
-                                   "'complete', numpy.ndarray, or "
-                                   "pandas.DataFrame.")
+            err = "X must be one of the following: None, 'complete'\n"
+            err += "a numpy.ndarray or a pandas.DataFrame\n"
+            raise TypeError(err)
 
         Xbuilt = self.Xbuilt[key]
         return Xbuilt
 
     def add_gpm(self, gpm, genotype_column="genotype", phenotype_column="phenotype"):
-        """Add a GenotypePhenotypeMap object to the epistasis model.
+        """
+        Add a GenotypePhenotypeMap object to the epistasis model.
         """
         self._gpm = gpm
 
@@ -465,7 +497,9 @@ class AbstractModel(ABC):
 
     @property
     def gpm(self):
-        """Data stored in a GenotypePhenotypeMap object."""
+        """
+        Data stored in a GenotypePhenotypeMap object.
+        """
         return self._gpm
 
     # -----------------------------------------------------------
@@ -473,7 +507,9 @@ class AbstractModel(ABC):
     # -----------------------------------------------------------
 
     def _X(self, data=None, method=None):
-        """Handle the X argument in this model."""
+        """
+        Handle the X argument in this model.
+        """
         # Get object type.
         obj = data.__class__
 
@@ -525,7 +561,9 @@ class AbstractModel(ABC):
         return X
 
     def _y(self, data=None, method=None):
-        """Handle y arguments in this model."""
+        """
+        Handle y arguments in this model.
+        """
         # Get object type.
         obj = data.__class__
         y = data
@@ -540,7 +578,9 @@ class AbstractModel(ABC):
             raise Exception("y is invalid.")
 
     def _yerr(self, data=None, method=None):
-        """Handle yerr argument in this model."""
+        """
+        Handle yerr argument in this model.
+        """
         # Get object type.
         obj = data.__class__
         yerr = data
@@ -553,7 +593,9 @@ class AbstractModel(ABC):
             raise Exception("yerr is invalid.")
 
     def _thetas(self, data=None, method=None):
-        """Handle yerr argument in this model."""
+        """
+        Handle yerr argument in this model.
+        """
         # Get object type.
         obj = data.__class__
         thetas = data
@@ -586,6 +628,7 @@ class AbstractModel(ABC):
         return self._phenotype_column
 
 class BaseModel(AbstractModel, RegressorMixin, BaseEstimator):
-    """Base model for defining an epistasis model.
+    """
+    Base model for defining an epistasis model.
     """
     pass

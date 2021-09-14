@@ -1,13 +1,20 @@
-import inspect
+__description__ = \
+"""
+Class implementing minimizer abstract classes for nonlinear fitting.
+"""
+__author__ = "Zach Sailer"
+
 import lmfit
 from lmfit import Parameter, Parameters
 
+import inspect
 from abc import ABC, abstractmethod
 
 # ---------------------- Abstract Minimizer class -------------------------
 
 class Minimizer(ABC):
-    """Abstract Base Class for function minimizers.
+    """
+    Abstract Base Class for function minimizers.
 
     Wraps a function. Fits data using the function. Then, that fitted function
     can be used to transform data.
@@ -39,7 +46,8 @@ class Minimizer(ABC):
 
 
 class FunctionMinimizer(Minimizer):
-    """Minimizer object that fits data using a function.
+    """
+    Minimizer object that fits data using a function.
     """
     def __init__(self, function, **p0):
         # Do some inspection to get the parameters from the nonlinear

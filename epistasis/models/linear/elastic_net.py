@@ -1,17 +1,20 @@
-import numpy as np
+__description__ = \
+"""
+Class implementing linear elastic net regression.
+"""
+__author__ = "Zach Sailer"
+
+from epistasis.models.base import BaseModel, use_sklearn
+from epistasis.models.utils import arghandler
+
 from sklearn.linear_model import ElasticNet
 
-from ..base import BaseModel, use_sklearn
-from ..utils import arghandler
-
-# Suppress an annoying error from scikit-learn
-import warnings
-#warnings.filterwarnings(action="ignore", module="scipy",
-#                        message="^internal gelsd")
+import numpy as np
 
 @use_sklearn(ElasticNet)
 class EpistasisElasticNet(BaseModel):
-    """Linear, high-order epistasis model with L1 and L2 regularization.
+    """
+    Linear, high-order epistasis model with L1 and L2 regularization.
 
     Parameters
     ----------
@@ -62,7 +65,8 @@ class EpistasisElasticNet(BaseModel):
             **kwargs)
 
     def compression_ratio(self):
-        """Compute the compression ratio for the Lasso regression
+        """
+        Compute the compression ratio for the Lasso regression
         """
         vals = self.epistasis.values
         zeros = vals[vals == 0]

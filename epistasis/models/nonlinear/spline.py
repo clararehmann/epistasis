@@ -1,17 +1,23 @@
-import numpy as np
+__description__ = \
+"""
+Class implementing a spline fit model.
+"""
+__author__ = "Zach Sailer"
 
-from .minimizer import Minimizer
-from .ordinary import EpistasisNonlinearRegression
 from epistasis.models import EpistasisLinearRegression
-from epistasis.models.utils import (arghandler, FittingError)
+from .ordinary import EpistasisNonlinearRegression
+from .minimizer import Minimizer
+
 from scipy.interpolate import UnivariateSpline
 from lmfit import Parameter, Parameters
 
+import numpy as np
 
 # -------------------- Minimizer object ------------------------
 
 class SplineMinizer(Minimizer):
-    """Spline Fitter.
+    """
+    Spline Fitter.
     """
     def __init__(self, k=3, s=None):
         self.k = k
@@ -93,15 +99,15 @@ class SplineMinizer(Minimizer):
             if 'c{}'.format(i) in self.parameters:
                 self.parameters['c{}'.format(i)].value = coef
             else:
-                raise FittingError('scipy.interpolate.UnivariateSpline '
-                'fitting returned more parameters than\nexpected, likely'
-                ' due to knots being added to closer fit the data.\nTry '
-                'raising the value of `s` when initializing the spline '
-                'model to prevent this.')
+                err = "\n\nspline fit failed.  Try increasing the value\n"
+                err += " of `s` when initializing the spline model.\n"
+                raise RuntimeError(err)
+
 # -------------------- Minimizer object ------------------------
 
 class EpistasisSpline(EpistasisNonlinearRegression):
-    """Estimate nonlinearity in a genotype-phenotype map using a spline.
+    """
+    Estimate nonlinearity in a genotype-phenotype map using a spline.
 
     Parameters
     ----------

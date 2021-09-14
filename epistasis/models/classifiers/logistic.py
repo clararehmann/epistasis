@@ -1,29 +1,23 @@
+__description__ = \
+"""
+Logistic classifier model.
+"""
+__author__ = "Zach Sailer"
+
+from epistasis.models.base import BaseModel, use_sklearn
+from epistasis.models.utils import arghandler
+from .base import EpistasisClassifierMixin
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import binarize
+
 import numpy as np
 import pandas as pd
 
-# Scikit-learn classifiers
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC
-from sklearn.naive_bayes import BernoulliNB
-from sklearn.preprocessing import binarize
-
-from epistasis.mapping import EpistasisMap
-from epistasis.models.base import BaseModel, use_sklearn
-from epistasis.models.utils import (XMatrixException, arghandler)
-
-from epistasis.models.linear import EpistasisLinearRegression
-
-# Suppress Deprecation warning
-import warnings
-#warnings.filterwarnings(action="ignore", module="sklearn",
-#                        category=DeprecationWarning)
-
-
-from .base import EpistasisClassifierMixin
-
 @use_sklearn(LogisticRegression)
 class EpistasisLogisticRegression(EpistasisClassifierMixin, BaseModel):
-    """Logistic regression for estimating epistatic interactions that lead to
+    """
+    Logistic regression for estimating epistatic interactions that lead to
     nonviable phenotypes. Useful for predicting viable/nonviable phenotypes.
 
     Parameters
