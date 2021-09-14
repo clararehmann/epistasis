@@ -4,8 +4,6 @@ Plot barplot with epistatic coefficients.
 """
 __author__ = "Zach Sailer"
 
-from epistasis.utils import Bunch
-
 import gpmap
 
 import matplotlib.pyplot as plt
@@ -16,6 +14,30 @@ import matplotlib as mpl
 import numpy as np
 from scipy.stats import norm as scipy_norm
 
+
+class Bunch:
+    """
+    Classic bunch object for constructing empty objects. Used to make readable
+    options.color etc.
+    """
+
+    def __init__(self, **kwds):
+        self.__dict__.update(kwds)
+
+    def update(self, **kwargs):
+        """
+        Turn a dictionary into an object with
+        """
+        types = dict([(key, type(val)) for key, val in self.__dict__.items()])
+        for key, value in kwargs.items():
+            typed = types[key]
+            if typed == np.ufunc:
+                typed_val = value
+            elif self.__dict__[key] is None:
+                typed_val = value
+            else:
+                typed_val = types[key](value)
+            setattr(self, key, typed_val)
 
 
 def plot_coefs(model=None, sites=None, values=None, errors=None, **kwargs):

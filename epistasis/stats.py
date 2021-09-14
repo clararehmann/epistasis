@@ -4,124 +4,71 @@ Functions with useful statistics functions for epistasis model.
 """
 __author__ = "Zach Sailer"
 
-import gpmap
 import numpy as np
 import scipy
 
-
-def split_data(data, idx=None, nobs=None, fraction=None):
-    """
-    Split DataFrame into two sets, a training and a test set.
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        full dataset to split.
-
-    idx : list
-        List of indices to include in training set
-
-    nobs : int
-        number of observations in training. If nobs is given, fraction is
-        ignored.
-
-    fraction : float
-        fraction in training set.
-
-    Returns
-    -------
-    train_set : pandas.DataFrame
-        training set.
-
-    test_set : pandas.DataFrame
-        test set.
-    """
-    if idx:
-
-        train_idx = set(idx)
-        total_idx = set(data.index)
-        test_idx = total_idx.difference(train_idx)
-
-        train_idx = sorted(list(train_idx))
-        test_idx = sorted(list(test_idx))
-
-    elif nobs:
-        length = len(data)
-
-        # Shuffle the indices
-        index = np.arange(0, length, dtype=int)
-        np.random.shuffle(index)
-
-        train_idx = index[:nobs]
-        test_idx = index[nobs:]
-
-    elif fraction:
-
-        if fraction is None:
-            raise Exception("nobs or fraction must be given")
-
-        elif 0 < fraction > 1.0:
-            raise Exception("fraction is invalid.")
-
-        else:
-            length = len(data)
-            nobs = int(length * fraction)
-
-        # Shuffle the indices
-        index = np.arange(0, length, dtype=int)
-        np.random.shuffle(index)
-
-        train_idx = index[:nobs]
-        test_idx = index[nobs:]
-
-    # Split data.
-    train_set = data.iloc[train_idx]
-    test_set = data.iloc[test_idx]
-
-    return train_set, test_set
-
-
-def split_gpm(gpm, idx=None, nobs=None, fraction=None):
-    """
-    Split GenotypePhenotypeMap into two sets, a training and a test set.
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        full dataset to split.
-
-    idx : list
-        List of indices to include in training set
-
-    nobs : int
-        number of observations in training.
-
-    fraction : float
-        fraction in training set.
-
-    Returns
-    -------
-    train_gpm : GenotypePhenotypeMap
-        training set.
-
-    test_gpm : GenotypePhenotypeMap
-        test set.
-    """
-    train, test = split_data(gpm.data, idx=idx, nobs=nobs, fraction=fraction)
-
-
-    # Create two new GenotypePhenotypeMaps given test and train pandas df
-    train_gpm = gpmap.read_dataframe(train,
-                                     wildtype=gpm.wildtype,
-                                     mutations=gpm.mutations,
-                                     site_labels=gpm.site_labels)
-
-    test_gpm =  gpmap.read_dataframe(test,
-                                     wildtype=gpm.wildtype,
-                                     mutations=gpm.mutations,
-                                     site_labels=gpm.site_labels)
-
-    return train_gpm, test_gpm
+## DETRIOUS
+# def incremental_mean(old_mean, samples, M, N):
+#     """
+#     Calculate an incremental running mean.
+#
+#     Parameters
+#     ----------
+#     old_mean : float or array
+#         current running mean(s) before adding samples
+#     samples : ndarray
+#         array containing the samples. Each column is a sample. Rows are
+#         independent values. Mean is taken across row.
+#     M : int
+#         number of samples in new chunk
+#     N : int
+#         number of previous samples in old mean
+#     """
+#     return ((N - M) * old_mean + samples.sum(axis=0)) / N
+#
+#
+# def incremental_var(old_mean, old_var, new_mean, samples, M, N):
+#     """
+#     Calculate an incremental variance.
+#
+#     Parameters
+#     ----------
+#     old_mean : float or array
+#         current running mean(s) before adding samples
+#     old_var : float or array
+#         current running variance(s) before adding samples
+#     new_mean : float
+#         updated mean
+#     samples : ndarray
+#         array containing the samples. Each column is a sample. Rows are
+#         independent values. Mean is taken across row.
+#     M : int
+#         number of samples in new chunk
+#     N : int
+#         number of previous samples in old mean
+#     """
+#     return ((N - M) * old_var + np.array((samples - old_var) *
+#                                          (samples - new_mean)).sum(axis=0)) / N
+#
+#
+# def incremental_std(old_mean, old_std, new_mean, samples, M, N):
+#     """
+#     Calculate an incremental standard deviation.
+#
+#     Parameters
+#     ----------
+#     old_mean : float or array
+#         current running mean(s) before adding samples
+#     samples : ndarray
+#         array containing the samples. Each column is a sample. Rows are
+#         independent values. Mean is taken across row.
+#     M : int
+#         number of samples in new chunk
+#     N : int
+#         number of previous samples in old mean
+#     """
+#     old_var = old_std**2
+#     return np.sqrt(incremental_var(old_mean, old_var, new_mean, samples, M, N))
 
 
 def gmean(x):
@@ -155,69 +102,6 @@ def gmean(x):
 
     GM = g1 + g2 + g3
     return GM
-
-
-def incremental_mean(old_mean, samples, M, N):
-    """
-    Calculate an incremental running mean.
-
-    Parameters
-    ----------
-    old_mean : float or array
-        current running mean(s) before adding samples
-    samples : ndarray
-        array containing the samples. Each column is a sample. Rows are
-        independent values. Mean is taken across row.
-    M : int
-        number of samples in new chunk
-    N : int
-        number of previous samples in old mean
-    """
-    return ((N - M) * old_mean + samples.sum(axis=0)) / N
-
-
-def incremental_var(old_mean, old_var, new_mean, samples, M, N):
-    """
-    Calculate an incremental variance.
-
-    Parameters
-    ----------
-    old_mean : float or array
-        current running mean(s) before adding samples
-    old_var : float or array
-        current running variance(s) before adding samples
-    new_mean : float
-        updated mean
-    samples : ndarray
-        array containing the samples. Each column is a sample. Rows are
-        independent values. Mean is taken across row.
-    M : int
-        number of samples in new chunk
-    N : int
-        number of previous samples in old mean
-    """
-    return ((N - M) * old_var + np.array((samples - old_var) *
-                                         (samples - new_mean)).sum(axis=0)) / N
-
-
-def incremental_std(old_mean, old_std, new_mean, samples, M, N):
-    """
-    Calculate an incremental standard deviation.
-
-    Parameters
-    ----------
-    old_mean : float or array
-        current running mean(s) before adding samples
-    samples : ndarray
-        array containing the samples. Each column is a sample. Rows are
-        independent values. Mean is taken across row.
-    M : int
-        number of samples in new chunk
-    N : int
-        number of previous samples in old mean
-    """
-    old_var = old_std**2
-    return np.sqrt(incremental_var(old_mean, old_var, new_mean, samples, M, N))
 
 
 def pearson(y_obs, y_pred):

@@ -1,7 +1,46 @@
+__description__ = \
+"""
+Functions for generating epistatic matrices. This is a much slower python
+implementation of the functionality impelmented in matrix_cython.pyx.
+"""
+__author__ = "Zach Sailer"
+
 import numpy as np
 import pandas as pd
 
 import warnings
+
+## XX DETERIOUS
+# def get_pandas_matrix(binary_genotypes,
+#                       sites,
+#                       matrix=None,
+#                       model_type="global"):
+#     """
+#     Get epistasis model matrix as a Pandas DataFrame.
+#
+#     This is useful for visualizing the matrix in a Jupyter Notebook.
+#
+#     Parameters
+#     ----------
+#     binary_genotypes : list or array
+#         List of genotypes in their binary representation
+#
+#     sites : list
+#         List of epistatic interaction sites.
+#
+#     model_type : string
+#         Type of epistasis model (global/Hadamard, local/Biochemical).
+#     """
+#     if matrix is None:
+#         matrix = get_model_matrix(
+#             binary_genotypes,
+#             sites,
+#             model_type=model_type
+#         )
+#
+#     keys = [tuple(s) for s in sites]
+#
+#     return pd.DataFrame(matrix, index=binary_genotypes, columns=keys)
 
 # Try importing model matrix builder from cython extension for speed up.
 try:
@@ -10,7 +49,7 @@ try:
 except ImportError:
 
     # Raise warning
-    warnings.warn('Could not load cython extension, "build_model_matrix".')
+    warnings.warn("Could not load cython extension, build_model_matrix'.\n")
 
     def build_model_matrix(encoding_vectors, sites):
         """
@@ -92,35 +131,3 @@ def get_model_matrix(binary_genotypes, sites, model_type='global'):
     # Build matrix.
     X = build_model_matrix(encoded_vector, sites)
     return X
-
-
-def get_pandas_matrix(binary_genotypes,
-                      sites,
-                      matrix=None,
-                      model_type="global"):
-    """
-    Get epistasis model matrix as a Pandas DataFrame.
-
-    This is useful for visualizing the matrix in a Jupyter Notebook.
-
-    Parameters
-    ----------
-    binary_genotypes : list or array
-        List of genotypes in their binary representation
-
-    sites : list
-        List of epistatic interaction sites.
-
-    model_type : string
-        Type of epistasis model (global/Hadamard, local/Biochemical).
-    """
-    if matrix is None:
-        matrix = get_model_matrix(
-            binary_genotypes,
-            sites,
-            model_type=model_type
-        )
-
-    keys = [tuple(s) for s in sites]
-
-    return pd.DataFrame(matrix, index=binary_genotypes, columns=keys)

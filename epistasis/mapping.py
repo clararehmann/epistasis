@@ -4,13 +4,43 @@ Mapping Object for epistatic interactions int the epistasis map.
 """
 __author__ = "Zach Sailer"
 
-
 import gpmap
 
 import pandas as pd
 
 import itertools as it
 from functools import wraps
+
+# XX DETRIOUS
+# def site_to_key(site, state=""):
+#     """
+#     Convert site to key. `state` is added to end of key.
+#     """
+#     if type(state) != str:
+#         raise Exception("`state` must be a string.")
+#     return ",".join([str(l) for l in site]) + state
+
+
+# def key_to_site(key):
+#     """
+#     Convert an interaction key to label.
+#     """
+#     return [int(k) for k in key.split(",")]
+
+
+# def genotype_coeffs(genotype, order=None):
+#     """
+#     List the possible epistatic coefficients (as label form) for a binary
+#     genotype up to a given order.
+#     """
+#     if order is None:
+#         order = len(genotype)
+#     length = len(genotype)
+#     mutations = [i + 1 for i in range(length) if genotype[i] == "1"]
+#     params = [[0]]
+#     for o in range(1, order + 1):
+#         params += [list(z) for z in it.combinations(mutations, o)]
+#     return params
 
 
 def assert_epistasis(method):
@@ -24,37 +54,6 @@ def assert_epistasis(method):
                 self.__name__ + " does not an epistasis attribute set yet.")
         return method(self, *args, **kwargs)
     return wrapper
-
-
-def site_to_key(site, state=""):
-    """
-    Convert site to key. `state` is added to end of key.
-    """
-    if type(state) != str:
-        raise Exception("`state` must be a string.")
-    return ",".join([str(l) for l in site]) + state
-
-
-def key_to_site(key):
-    """
-    Convert an interaction key to label.
-    """
-    return [int(k) for k in key.split(",")]
-
-
-def genotype_coeffs(genotype, order=None):
-    """
-    List the possible epistatic coefficients (as label form) for a binary
-    genotype up to a given order.
-    """
-    if order is None:
-        order = len(genotype)
-    length = len(genotype)
-    mutations = [i + 1 for i in range(length) if genotype[i] == "1"]
-    params = [[0]]
-    for o in range(1, order + 1):
-        params += [list(z) for z in it.combinations(mutations, o)]
-    return params
 
 def encoding_to_sites(order, encoding_table, start_order=0):
     """

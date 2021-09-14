@@ -4,8 +4,125 @@ Functions for validating model fits of epistasis models.
 """
 __author__ = "Zach Sailer"
 
+
+from .stats import pearson
+import gpmap
 import numpy as np
-from .stats import split_gpm, pearson
+
+def split_data(data, idx=None, nobs=None, fraction=None):
+    """
+    Split DataFrame into two sets, a training and a test set.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        full dataset to split.
+
+    idx : list
+        List of indices to include in training set
+
+    nobs : int
+        number of observations in training. If nobs is given, fraction is
+        ignored.
+
+    fraction : float
+        fraction in training set.
+
+    Returns
+    -------
+    train_set : pandas.DataFrame
+        training set.
+
+    test_set : pandas.DataFrame
+        test set.
+    """
+    if idx:
+
+        train_idx = set(idx)
+        total_idx = set(data.index)
+        test_idx = total_idx.difference(train_idx)
+
+        train_idx = sorted(list(train_idx))
+        test_idx = sorted(list(test_idx))
+
+    elif nobs:
+        length = len(data)
+
+        # Shuffle the indices
+        index = np.arange(0, length, dtype=int)
+        np.random.shuffle(index)
+
+        train_idx = index[:nobs]
+        test_idx = index[nobs:]
+
+    elif fraction:
+
+        if fraction is None:
+            raise Exception("nobs or fraction must be given")
+
+        elif 0 < fraction > 1.0:
+            raise Exception("fraction is invalid.")
+
+        else:
+            length = len(data)
+            nobs = int(length * fraction)
+
+        # Shuffle the indices
+        index = np.arange(0, length, dtype=int)
+        np.random.shuffle(index)
+
+        train_idx = index[:nobs]
+        test_idx = index[nobs:]
+
+    # Split data.
+    train_set = data.iloc[train_idx]
+    test_set = data.iloc[test_idx]
+
+    return train_set, test_set
+
+
+def split_gpm(gpm, idx=None, nobs=None, fraction=None):
+    """
+    Split GenotypePhenotypeMap into two sets, a training and a test set.
+
+    Parameters
+    ----------
+    gpm : gpmap.GenotypePhenotypeMap
+        GenotypePhenotypeMap with data to split
+
+    idx : list
+        List of indices to include in training set
+
+    nobs : int
+        number of observations in training.
+
+    fraction : float
+        fraction in training set.
+
+    Returns
+    -------
+    train_gpm : GenotypePhenotypeMap
+        training set.
+
+    test_gpm : GenotypePhenotypeMap
+        test set.
+    """
+    train, test = split_data(gpm.data, idx=idx, nobs=nobs, fraction=fraction)
+
+
+    # Create two new GenotypePhenotypeMaps given test and train pandas df
+    train_gpm = gpmap.read_dataframe(train,
+                                     wildtype=gpm.wildtype,
+                                     mutations=gpm.mutations,
+                                     site_labels=gpm.site_labels)
+
+    test_gpm =  gpmap.read_dataframe(test,
+                                     wildtype=gpm.wildtype,
+                                     mutations=gpm.mutations,
+                                     site_labels=gpm.site_labels)
+
+    return train_gpm, test_gpm
+
 
 def k_fold(gpm,
            model,

@@ -6,7 +6,8 @@ __author__ = "Zach Sailer"
 
 from epistasis.mapping import EpistasisMap, encoding_to_sites
 from epistasis.matrix import get_model_matrix
-from epistasis.utils import genotypes_to_X
+
+import gpmap
 
 from sklearn.preprocessing import binarize
 from sklearn.base import RegressorMixin, BaseEstimator
@@ -16,6 +17,42 @@ import pandas as pd
 
 import inspect
 from abc import abstractmethod, ABC
+
+def _genotypes_to_X(genotypes, gpm, order=1, model_type='global'):
+    """
+    Build an X matrix for a list of genotypes.
+
+    Parameters
+    ----------
+    genotypes : list-like
+        list of genotypes matching genotypes seen in gpm
+    gpm : gpmap.GenotypePhenotypeMap
+        genotype phenotype map that has an encoding table for converting the
+        genotypes to binary
+    order : int
+        order of epistasis for generating the X matrix.
+    model_type : str
+        should be 'global' or 'local', indicating what reference state to use
+        for the epistasis mode.
+
+    Returns
+    -------
+    X : np.ndarray
+        binary array indicating which epistatic coefficients should be applied
+        to which genotype.
+    """
+    # But a sites list.
+    sites = encoding_to_sites(
+        order,
+        gpm.encoding_table
+    )
+    binary = gpmap.utils.genotypes_to_binary(genotypes, gpm.encoding_table)
+
+    # X matrix
+    X = get_model_matrix(binary, sites, model_type=model_type)
+
+    return X
+
 
 class SubclassException(Exception):
     """
@@ -518,22 +555,19 @@ class AbstractModel(ABC):
         if X is None:
 
             # Get X from genotypes
-            X = genotypes_to_X(
-                self.gpm.genotype,
-                self.gpm,
-                order=self.order,
-                model_type=self.model_type
-            )
+            X = _genotypes_to_X(self.gpm.genotype,
+                                self.gpm,
+                                order=self.order,
+                                model_type=self.model_type)
 
         elif obj is str and X in self.gpm.genotype:
             single_genotype = [X]
-            # Get X from genotypes
-            X = genotypes_to_X(
-                single_genotype,
-                self.gpm,
-                order=self.order,
-                model_type=self.model_type
-            )
+
+            # Get X from a single genotype
+            X = _genotypes_to_X(single_genotype,
+                                self.gpm,
+                                order=self.order,
+                                model_type=self.model_type)
 
         # If X is a keyword in Xbuilt, use it.
         elif obj is str and X in self.Xbuilt:
@@ -547,14 +581,12 @@ class AbstractModel(ABC):
         elif obj in [list, np.ndarray, pd.DataFrame, pd.Series]:
             genotypes = X
             # Get X from genotypes
-            X = genotypes_to_X(
-                genotypes,
-                self.gpm,
-                order=self.order,
-                model_type=self.model_type
-            )
+            X = _genotypes_to_X(genotypes,
+                                self.gpm,
+                                order=self.order,
+                                model_type=self.model_type)
         else:
-            raise Exception("X is invalid.")
+            raise TypeError("X is invalid.")
 
         # Save X
         self.Xbuilt[method] = X
