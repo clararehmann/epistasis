@@ -32,7 +32,7 @@ def model(model):
     # Get Padd vs Pobs datapoints and classes
     padd = model.Model.Additive.predict(X="obs")
     pprob = model.Classifier.predict_proba(X="obs")
-    pobs = np.array(model.gpm.loc[:,self.phenotype_column])
+    pobs = np.array(model.gpm.loc[:,model.phenotype_column])
 
     # Build a color array for the two classes
     #color = np.empty(len(pclass), dtype=str)

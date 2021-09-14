@@ -9,7 +9,7 @@ import pandas as pd
 # Scikit learn imports
 from sklearn.base import BaseEstimator, RegressorMixin
 
-from gpmap import GenotypePhenotypeMap
+import gpmap
 
 # Epistasis imports.
 from epistasis.mapping import EpistasisMap

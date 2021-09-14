@@ -69,7 +69,7 @@ def k_fold(gpm,
 def holdout(gpm,
             model,
             size=1,
-            repeat=1
+            repeat=1,
             genotype_column="genotype",
             phenotype_column="phenotype"):
     """

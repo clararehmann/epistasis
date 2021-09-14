@@ -9,7 +9,7 @@ from scipy.stats import f
 from scipy.stats import norm
 import scipy
 
-from gpmap import GenotypePhenotypeMap
+import gpmap
 
 # -----------------------------------------------------------------------
 # Correlation metrics
@@ -116,14 +116,14 @@ def split_gpm(gpm, idx=None, nobs=None, fraction=None):
 
     # Create two new GenotypePhenotypeMaps given test and train pandas df
     train_gpm = gpmap.read_dataframe(train,
-                                     wildtype=self.gpm.wildtype,
-                                     mutations=self.gpm.mutations,
-                                     site_labels=self.gpm.site_labels)
+                                     wildtype=gpm.wildtype,
+                                     mutations=gpm.mutations,
+                                     site_labels=gpm.site_labels)
 
     test_gpm =  gpmap.read_dataframe(test,
-                                     wildtype=self.gpm.wildtype,
-                                     mutations=self.gpm.mutations,
-                                     site_labels=self.gpm.site_labels)
+                                     wildtype=gpm.wildtype,
+                                     mutations=gpm.mutations,
+                                     site_labels=gpm.site_labels)
 
     return train_gpm, test_gpm
 
