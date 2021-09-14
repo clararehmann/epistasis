@@ -27,9 +27,31 @@ class EpistasisPipeline(list, BaseModel):
     def num_of_params(self):
         return sum([m.num_of_params for m in self])
 
-    def add_gpm(self, gpm):
+    def add_gpm(self,
+                gpm,
+                genotype_column="genotype",
+                phenotype_column=None,
+                uncertainty_column=None):
+        """
+        Add a GenotypePhenotypeMap object to the epistasis model.
+
+        gpm : gpmap.GenotypePhenotypeMap
+            genotype phenotype map with genotypes and phenotypes
+        genotype_column : str
+            name of the genotype column in the gpm
+        phenotype_column : str
+            name of the phenotype column in the gpm. If None, take the first
+            numeric column beside the genotype_column in the gpm
+        uncertainty_column : str
+            name of column with phenotype uncertainty in gpm. if None, make a
+            column `epi_zero_uncertainty` with 1e-6*np.min(phenotype)
+        """
+
         self._gpm = gpm
-        self[0].add_gpm(gpm)
+        self[0].add_gpm(gpm,
+                        genotype_column,
+                        phenotype_column,
+                        uncertainty_column)
         return self
 
     @property
@@ -51,14 +73,19 @@ class EpistasisPipeline(list, BaseModel):
         y : array
             array of phentoypes.
         """
+
         # Fit the first model
         model = self[0]
         gpm = model.fit_transform(X=X, y=y)
 
         # Then fit every model afterwards.
-        for model in self[1:]:
-            # Get transformed genotype from modeli.
-            model.add_gpm(gpm)
+        for i, model in enumerate(self[1:]):
+
+            # Get transformed gpm from previous model
+            model.add_gpm(gpm,
+                          self[i-1].genotype_column,
+                          self[i-1].phenotype_column,
+                          self[i-1].uncertainty_column)
 
             # Fit model.
             try:
@@ -238,22 +265,22 @@ class EpistasisPipeline(list, BaseModel):
         X = data
         # If X is None, see if we saved an array.
         if X is None:
-            return self.gpm.genotype
+            return np.array(self.gpm.data.loc[:,self.genotype_column])
         return X
 
     def _y(self, data=None, method=None):
         """Handle y arguments in this model."""
         y = data
-        ## XX_API_CHANGE
+
         if y is None:
-            return self.gpm.phenotype
+            return np.array(self.gpm.data.loc[:,self.phenotype_column])
         return y
 
     def _yerr(self, data=None, method=None):
         """Handle yerr argument in this model."""
         yerr = data
         if yerr is None:
-            return 1.0 # XX_API_CHANGE self.gpm.std.upper
+            return np.array(self.gpm.data.loc[:,self.uncertainty_column])
         return yerr
 
     def _thetas(self, data=None, method=None):

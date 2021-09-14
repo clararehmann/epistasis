@@ -512,11 +512,88 @@ class AbstractModel(ABC):
         Xbuilt = self.Xbuilt[key]
         return Xbuilt
 
-    def add_gpm(self, gpm, genotype_column="genotype", phenotype_column="phenotype"):
+    def add_gpm(self,
+                gpm,
+                genotype_column="genotype",
+                phenotype_column=None,
+                uncertainty_column=None):
         """
         Add a GenotypePhenotypeMap object to the epistasis model.
+
+        gpm : gpmap.GenotypePhenotypeMap
+            genotype phenotype map with genotypes and phenotypes
+        genotype_column : str
+            name of the genotype column in the gpm
+        phenotype_column : str
+            name of the phenotype column in the gpm. If None, take the first
+            numeric column beside the genotype_column in the gpm
+        uncertainty_column : str
+            name of column with phenotype uncertainty in gpm. if None, make a
+            column `epi_zero_uncertainty` with 1e-6*np.min(phenotype)
         """
+
+        # Make sure gpm is a GenotypePhenotypeMap and append it
+        if not isinstance(gpm,gpmap.GenotypePhenotypeMap):
+            err = "gpm must be a gpmap.GenotypePhenotypeMap instance\n"
+            raise TypeError(err)
         self._gpm = gpm
+
+        # Make sure attached genotype-phenotype map has the specified genotype
+        # column.
+        try:
+            self._gpm.data.loc[:,genotype_column]
+        except KeyError:
+            err = "gpm does not have the specified genotype_column\n"
+            err += f"'{genotype_column}'\n"
+            raise KeyError(err)
+        self._genotype_column = genotype_column
+
+        # If the phenotype_column is not specified, grab the first numeric
+        # non-genotype column.
+        if phenotype_column is None:
+            for c in self._gpm.data.columns:
+                if c != genotype_column:
+                    if np.issubdtype(self._gpm.data.loc[:,c].dtype, np.number):
+                        print(f"Using '{c}' as the phenotype_column in the gpm.")
+                        phenotype_column = c
+                        break
+
+        # Make sure attached genotype-phenotype map has the specified phenotype
+        # column and that this column is numeric.
+        try:
+            self._gpm.data.loc[:,phenotype_column]
+        except KeyError:
+            err = "gpm does not have the specified phenotype_column\n"
+            err += f"'{phenotype_column}'\n"
+            raise KeyError(err)
+        if not np.issubdtype(self._gpm.data.loc[:,phenotype_column].dtype, np.number):
+            err = f"'{phenotype_column}' must be numeric\n"
+            raise ValueError(err)
+
+        self._phenotype_column = phenotype_column
+
+        # If uncertainty_column is not specified, make a new fake uncertainty
+        # column with a value of 0.0
+        if uncertainty_column is None:
+            uncertainty_column = "epi_zero_uncertainty"
+            v = np.min(np.abs(self._gpm.data.loc[:,phenotype_column]))*1e-6
+            self._gpm.data.loc[:,"epi_zero_uncertainty"] = v
+            print("Setting phenotype uncertainty to 0.0")
+
+        # Make sure attached genotype-phenotype map has the specified uncertainty
+        # column and that this column is numeric.
+        try:
+            self._gpm.data.loc[:,uncertainty_column]
+        except KeyError:
+            err = "gpm does not have the specified uncertainty_column\n"
+            err += f"'{uncertainty_column}'\n"
+            raise KeyError(err)
+        if not np.issubdtype(self._gpm.data.loc[:,uncertainty_column].dtype, np.number):
+            err = f"'{uncertainty_column}' must be numeric\n"
+            raise ValueError(err)
+
+        self._uncertainty_column = uncertainty_column
+
 
         # Reset Xbuilt.
         self.Xbuilt = {}
@@ -617,7 +694,7 @@ class AbstractModel(ABC):
         obj = data.__class__
         yerr = data
         if yerr is None:
-            return 0.1 # XX_API_CHANGE self.gpm.std.upper
+            return np.array(self.gpm.data.loc[:,self.uncertainty_column])
 
         elif obj in [list, np.ndarray, pd.Series, pd.DataFrame]:
             return yerr
@@ -658,6 +735,10 @@ class AbstractModel(ABC):
     @property
     def phenotype_column(self):
         return self._phenotype_column
+
+    @property
+    def uncertainty_column(self):
+        return self._uncertainty_column
 
 class BaseModel(AbstractModel, RegressorMixin, BaseEstimator):
     """

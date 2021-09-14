@@ -84,10 +84,36 @@ class EpistasisNonlinearRegression(BaseModel):
         self.Additive = EpistasisLinearRegression(
             order=1, model_type=self.model_type)
 
-    def add_gpm(self, gpm):
-        super(EpistasisNonlinearRegression, self).add_gpm(gpm)
+    def add_gpm(self,
+                gpm,
+                genotype_column="genotype",
+                phenotype_column=None,
+                uncertainty_column=None):
+        """
+        Add a GenotypePhenotypeMap object to the epistasis model.
+
+        gpm : gpmap.GenotypePhenotypeMap
+            genotype phenotype map with genotypes and phenotypes
+        genotype_column : str
+            name of the genotype column in the gpm
+        phenotype_column : str
+            name of the phenotype column in the gpm. If None, take the first
+            numeric column beside the genotype_column in the gpm
+        uncertainty_column : str
+            name of column with phenotype uncertainty in gpm. if None, make a
+            column `epi_zero_uncertainty` with 1e-6*np.min(phenotype)
+        """
+        super(EpistasisNonlinearRegression, self).add_gpm(gpm,
+                                                          genotype_column,
+                                                          phenotype_column,
+                                                          uncertainty_column)
+
         # Add gpm to other models.
-        self.Additive.add_gpm(gpm)
+        self.Additive.add_gpm(gpm,
+                              genotype_column,
+                              phenotype_column,
+                              uncertainty_column)
+
         return self
 
     @property

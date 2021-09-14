@@ -25,7 +25,10 @@ class EpistasisClassifierMixin:
         self.Additive = EpistasisLinearRegression(
             order=1, model_type=self.model_type)
 
-        self.Additive.add_gpm(self.gpm)
+        self.Additive.add_gpm(self.gpm,
+                              self.genotype_column,
+                              self.phenotype_column,
+                              self.uncertainty_column)
 
         # Prepare a high-order model
         self.Additive.epistasis = EpistasisMap(
