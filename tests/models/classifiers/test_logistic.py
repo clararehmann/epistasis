@@ -53,7 +53,7 @@ class TestEpistasisLogisticRegression(object):
         model.fit()
         ypred = model.predict()
 
-        assert len(ypred) == model.gpm.n
+        assert len(ypred) == model.gpm.num_genotypes
 
     def test_predict_proba(self, gpm):
         model = EpistasisLogisticRegression(threshold=self.threshold,
@@ -63,7 +63,7 @@ class TestEpistasisLogisticRegression(object):
         probs = model.predict_proba()
 
         # check probs is the right length
-        assert len(probs) == model.gpm.n
+        assert len(probs) == model.gpm.num_genotypes
 
         # Check probs are between 0 and 1
         assert np.all(probs <= 1)
@@ -77,7 +77,7 @@ class TestEpistasisLogisticRegression(object):
         probs = model.predict_log_proba()
 
         # check probs is the right length
-        assert len(probs) == model.gpm.n
+        assert len(probs) == model.gpm.num_genotypes
 
         # Check log probs are less than or equal to 0
         assert np.all(probs <= 0)

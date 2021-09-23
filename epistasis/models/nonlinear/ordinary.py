@@ -171,8 +171,11 @@ class EpistasisNonlinearRegression(BaseModel):
 
     @arghandler
     def _fit_nonlinear(self, X=None, y=None, **kwargs):
-        """Estimate the scale of multiple mutations in a genotype-phenotype
-        map."""
+        """
+        Estimate the scale of multiple mutations in a genotype-phenotype
+        map.
+        """
+
         # Use a first order matrix only.
         if type(X) == np.ndarray or type(X) == pd.DataFrame:
             Xadd = X[:, :self.Additive.epistasis.n]
@@ -188,6 +191,7 @@ class EpistasisNonlinearRegression(BaseModel):
 
     @arghandler
     def fit_transform(self, X=None, y=None, **kwargs):
+
         self.fit(X=X, y=y, **kwargs)
 
         linear_phenotypes = self.transform(X=X, y=y)
@@ -198,7 +202,9 @@ class EpistasisNonlinearRegression(BaseModel):
                                    mutations=self.gpm.mutations,
                                    site_labels=self.gpm.site_labels)
 
+        gpm.data.loc[:,self.genotype_column] = self.gpm.data.loc[:,self.genotype_column]
         gpm.data.loc[:,self.phenotype_column] = linear_phenotypes
+        ## XX TRANSFORM ERORR HERE
 
         return gpm
 
