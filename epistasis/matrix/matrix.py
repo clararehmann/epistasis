@@ -10,11 +10,11 @@ import pandas as pd
 
 import warnings
 
-import epistais.matrix._matrix_python as py
+import epistasis.matrix.matrix_python as py
 
 # Try importing model matrix builder from cython extension for speed up.
 try:
-    import epistais.matrix._matrix_cython as cy
+    import epistasis.matrix.matrix_cython as cy
 except ImportError:
     cy = None
     warnings.warn("Could not load cython extension, build_model_matrix'.\n")

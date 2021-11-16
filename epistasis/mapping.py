@@ -91,7 +91,7 @@ def encoding_to_sites(order, encoding_table, start_order=0):
     for order in orders:
         for combination in it.combinations(mutation_index, order):
             sites += list(it.product(*combination))
-
+    
     return sites
 
 

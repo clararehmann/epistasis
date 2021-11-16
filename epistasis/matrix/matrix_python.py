@@ -8,6 +8,7 @@ def build_model_matrix(encoding_vectors, sites):
     This can be made faster by cython.
     """
     # get dimensions of matrix
+    sites = [list(s) for s in sites]
     n, m = len(encoding_vectors), len(sites)
 
     matrix = np.ones((n,m), dtype=int)

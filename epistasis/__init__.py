@@ -18,3 +18,4 @@ Currently, this package works only as an API and there is no command-line
 interface. Instead, we encourage you use this package inside `Jupyter notebooks`_ .
 """
 from .__version__ import __version__
+from . import *
